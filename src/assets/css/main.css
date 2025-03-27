@@ -1,0 +1,716 @@
+/* Define common variables */
+:root {
+    /* Colors */
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --secondary-color: #6c757d;
+    --error-color: #dc3545;
+    --background-body: #f5f7fb;
+    --background-card: #ffffff;
+    --background-input: #f0f2f5;
+    --background-hover: #e4e6eb;
+    --text-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-hover: rgba(0, 0, 0, 0.15);
+    --border-color: #e4e6eb;
+
+    /* Shadows */
+    --box-shadow: 0 2px 10px var(--shadow-color);
+    --box-shadow-hover: 0 4px 14px var(--shadow-hover);
+    --box-shadow-card: 0 4px 12px var(--shadow-color);
+    --box-shadow-card-hover: 0 6px 16px var(--shadow-hover);
+}
+
+/* General Styles */
+body {
+    background-color: var(--background-body);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Buttons */
+/* Buttons */
+.btn-primary, .btn-outline-primary {
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 25px;
+    padding: 10px;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.btn-primary:hover, .btn-outline-primary:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+    border-radius: 25px;
+    padding: 10px;
+    transition: transform 0.2s;
+}
+
+/* Custom Outline Button for Follow Section */
+.btn-custom-outline {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 25px;
+    padding: 5px 10px; /* Adjusted for smaller buttons */
+    transition: transform 0.2s, background-color 0.3s, color 0.3s;
+}
+
+.btn-custom-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--background-card);
+    transform: scale(1.05);
+}
+
+.btn-custom-outline i {
+    color: var(--primary-color);
+}
+
+.btn-custom-outline:hover i {
+    color: var(--background-card);
+}
+
+/* Profile Picture */
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    transition: transform 0.2s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--background-card);
+    box-shadow: var(--box-shadow);
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: box-shadow 0.3s ease;
+}
+
+.navbar:hover {
+    box-shadow: var(--box-shadow-hover);
+}
+
+.navbar .search-bar {
+    background-color: var(--background-body);
+    border-radius: 20px;
+    padding: 5px 15px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.navbar .search-bar:hover {
+    background-color: var(--background-hover);
+    transform: scale(1.03);
+    box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+.navbar .text-muted {
+    text-decoration: none;
+    color: var(--secondary-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar .text-muted:hover {
+    color: var(--primary-color)!important;
+    background-color: var(--background-body);
+    transform: scale(1.05);
+}
+
+.navbar .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.navbar .profile-pic:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+}
+
+.navbar .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--error-color);
+    font-size: 8px;
+    width: 16px;
+    height: 16px;
+    line-height: 12px;
+    border-radius: 50%;
+    transition: transform 0 W.2s ease;
+}
+
+.navbar .badge:hover {
+    transform: scale(1.25);
+}
+
+.navbar .fa-bell {
+    color: var(--secondary-color);
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar .fa-bell:hover {
+    color: var(--primary-color);
+    transform: scale(1.15);
+}
+
+/* Notification Dropdown Styles */
+.notification-dropdown {
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+    max-height: 450px;
+    width: 350px;
+}
+
+.notification-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px;
+}
+
+.notification-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.notification-header .text-muted {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.notification-header .text-muted:hover {
+    color: #007bff !important;
+}
+
+.notification-item {
+    padding: 15px;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item .profile-pic {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.notification-item .notification-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.notification-item .notification-icon span {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.notification-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.notification-item small {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.notification-item .btn {
+    margin-top: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.notification-dropdown .dropdown-divider {
+    margin: 0;
+    border-top-color: #e9ecef;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    border-radius: 10px;
+    box-shadow: var(--box-shadow-card);
+    border: none;
+    padding: 10px 0;
+    min-width: 200px;
+    margin-top: 10px;
+}
+
+.dropdown-menu .profile-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-menu .profile-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.dropdown-menu .profile-header div {
+    flex-grow: 1;
+}
+
+.dropdown-menu .profile-header h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.dropdown-menu .profile-header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--secondary-color);
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--background-body);
+    color: var(--primary-color);
+}
+
+.dropdown-item i {
+    margin-right: 10px;
+    color: var(--secondary-color);
+}
+
+.dropdown-item:hover i {
+    color: var(--primary-color);
+}
+
+.dropdown-divider {
+    margin: 5px 0;
+}
+
+.theme-toggle {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.theme-toggle label {
+    margin-right: 10px;
+}
+
+.theme-toggle i {
+    margin: 0 5px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.theme-toggle i.active {
+    color: var(--primary-color);
+}
+
+.theme-toggle i:hover {
+    color: var(--primary-color);
+}
+
+.dropdown-footer {
+    padding: 10px 15px;
+    font-size: 12px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: var(--background-card);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--box-shadow);
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+.sidebar .profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.sidebar .profile-pic:hover {
+    transform: scale(1.05);
+}
+
+.sidebar .nav-link {
+    color: var(--text-color);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--primary-color);
+    background-color: var(--background-body);
+    border-radius: 5px;
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.sidebar .nav-link.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
+    background-color: transparent;
+    padding: 20px 0;
+}
+
+/* Share Thoughts Card */
+.share-thoughts-card {
+    background-color: var(--background-card);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow-card);
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s;
+}
+
+.share-thoughts-card:hover {
+    box-shadow: var(--box-shadow-card-hover);
+}
+
+.share-thoughts-card .form-control {
+    background-color: var(--background-input);
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: var(--text-color);
+    transition: background-color 0.3s;
+}
+
+.share-thoughts-card .form-control:focus {
+    background-color: var(--background-hover);
+    outline: none;
+    box-shadow: none;
+}
+
+.share-thoughts-card .btn {
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 13px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.share-thoughts-card .btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Share Thoughts Modal */
+.modal-content {
+    border-radius: 15px;
+    box-shadow: var(--box-shadow-card);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.modal-body .form-control {
+    background-color: var(--background-input);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: var(--text-color);
+    transition: background-color 0.3s;
+}
+
+.modal-body .form-control:focus {
+    background-color: var(--background-hover);
+    outline: none;
+    box-shadow: none;
+}
+
+.upload-area .drag-drop-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    background-color: var(--background-body);
+    transition: background-color 0.3s;
+}
+
+.upload-area .drag-drop-area:hover {
+    background-color: var(--background-hover);
+}
+
+.upload-area .drag-drop-area i {
+    color: var(--secondary-color);
+}
+
+.upload-area .drag-drop-area p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--secondary-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-footer .btn-outline-danger {
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.modal-footer .btn-outline-danger:hover {
+    transform: scale(1.05);
+    background-color: var(--error-color);
+    color: var(--background-card);
+}
+
+.modal-footer .btn-primary {
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.modal-footer .btn-primary:hover {
+    transform: scale(1.05);
+    background-color: var(--primary-hover);
+}
+
+/* Post Card */
+.post-card.card {
+    background-color: var(--background-card);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow-card);
+    padding: 15px;
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+
+.post-card.card:hover {
+    box-shadow: var(--box-shadow-card-hover);
+    transform: translateY(-5px);
+}
+
+.post-card .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-card .post-image {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: opacity 0.3s;
+}
+
+.post-card .post-image:hover {
+    opacity: 0.9;
+}
+
+.post-card .d-flex span {
+    transition: color 0.3s;
+}
+
+.post-card .d-flex span:hover {
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+/* Right Sidebar */
+.right-sidebar {
+    background-color: var(--background-card);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--box-shadow);
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.right-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.right-sidebar::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+.follow-suggestion {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    transition: background-color 0.3s;
+}
+
+.follow-suggestion:hover {
+    background-color: var(--background-body);
+    border-radius: 5px;
+}
+
+.follow-suggestion .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.follow-suggestion .btn {
+    margin-left: auto;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.follow-suggestion .btn:hover {
+    transform: scale(1.1);
+    background-color: var(--primary-color);
+    color: var(--background-card);
+}
+
+.news-item {
+    margin-bottom: 10px;
+}
+
+.news-item a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.news-item a:hover {
+    color: var(--primary-color);
+}
+
+/* Authentication Cards (Signup/Login) */
+.auth-card {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow-card);
+    padding: 30px; /* Increased padding for a more spacious look */
+}
+
+.auth-card h3 {
+    font-size: 24px; /* Consistent heading size */
+    font-weight: 600;
+}
+
+.auth-card .form-label {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.auth-card .form-control {
+    padding: 10px 15px; /* Consistent padding for inputs */
+}
+
+.auth-card .btn-primary {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.auth-card p {
+    font-size: 14px;
+}
+
+/* Signup Specific Styles */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+}
+
+/* Form Validation */
+.form-control.is-invalid {
+    border-color: var(--error-color);
+}
+
+.invalid-feedback {
+    display: none;
+    color: var(--error-color);
+    font-size: 12px;
+}
+
+.form-control.is-invalid ~ .invalid-feedback {
+    display: block;
+}
