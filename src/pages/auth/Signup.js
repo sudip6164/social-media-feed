@@ -1,7 +1,11 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../../pages/context/user.context';
+import { createUser, getUsers } from '../../utils/user.utils';
 
-function Signup() {
+const Signup = () => {
+  const navigate = useNavigate();
+  const { _setUser } = useContext(UserContext); // Access _setUser from context
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     username: '',
@@ -10,7 +14,9 @@ function Signup() {
     fullName: '',
     dob: '',
     bio: '',
+    joined: '', // Add joined field to store the date
   });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,11 +63,57 @@ function Signup() {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
-      console.log('Signup form submitted:', formData);
+      try {
+        // Check if username or email already exists
+        const users = await getUsers();
+        const userExists = users.some(
+          (u) => u.username === formData.username || u.email === formData.email
+        );
+
+        if (userExists) {
+          setError('Username or email already exists.');
+          return;
         }
+
+        // Dynamically generate the current date in ISO format (YYYY-MM-DD)
+        const currentDate = new Date();
+        const joinedDate = currentDate.toISOString().split('T')[0]; // e.g., "2025-03-27"
+
+        // Update formData with the joined date
+        setFormData((prevData) => ({
+          ...prevData,
+          joined: joinedDate,
+        }));
+
+        // Create new user with the joined date
+        const newUser = {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+          dob: formData.dob,
+          bio: formData.bio || 'Not provided',
+          joined: joinedDate, // Store in ISO format (same as dob)
+        };
+
+        await createUser(newUser);
+
+        // Fetch the newly created user to get the ID
+        const updatedUsers = await getUsers();
+        const createdUser = updatedUsers.find((u) => u.email === formData.email);
+
+        // Log the user in
+        _setUser(createdUser);
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000);
+      } catch (err) {
+        setError('An error occurred. Please try again.');
+      }
+    }
   };
 
   const progress = ((currentStep - 1) / 2) * 100; // 3 steps total
@@ -70,6 +122,7 @@ function Signup() {
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
       <div className="card p-4 signup-card auth-card">
         <h3 className="text-center mb-4">Sign Up</h3>
+        {error && <div className="alert alert-danger">{error}</div>}
         <div className="progress mb-3" style={{ height: '5px' }}>
           <div
             className="progress-bar"
@@ -193,6 +246,7 @@ function Signup() {
               <p><strong>Full Name:</strong> <span>{formData.fullName}</span></p>
               <p><strong>Date of Birth:</strong> <span>{formData.dob}</span></p>
               <p><strong>Bio:</strong> <span>{formData.bio || 'Not provided'}</span></p>
+              <p><strong>Joined:</strong> <span>{formData.joined || 'Will be set on signup'}</span></p>
             </div>
             <div className="d-flex justify-content-between">
               <button type="button" className="btn btn-outline-primary prev-btn" onClick={handlePrevious}>
@@ -208,6 +262,6 @@ function Signup() {
       </div>
     </div>
   );
-}
+};
 
 export default Signup;

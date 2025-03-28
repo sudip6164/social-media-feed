@@ -1,36 +1,57 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom'; // For navigation links
+import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../../pages/context/user.context';
+import { checkLogin } from '../../utils/user.utils';
 
-function Login() {
+const Login = () => {
+  const navigate = useNavigate();
+  const { _setUser } = useContext(UserContext); // Access _setUser from context
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login form submitted:', formData);
+    setError('');
+
+    try {
+      const user = await checkLogin(formData.email, formData.password);
+      if (user === null) {
+        setError('Invalid email or password.');
+        localStorage.setItem('is_login', '0');
+      } else {
+        _setUser(user); // Set the user in context
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    }
   };
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
       <div className="card auth-card">
         <h3 className="text-center mb-4">Login</h3>
+        {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">Username or Email</label>
+            <label htmlFor="email" className="form-label">Email</label>
             <input
               type="text"
               className="form-control rounded-pill"
-              id="username"
-              name="username"
-              placeholder="Enter username or email"
-              value={formData.username}
+              id="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
               onChange={handleChange}
               required
             />

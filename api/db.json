@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "sam",
+      "email": "sam@example.com",
+      "password": "password123",
+      "fullName": "Sam Lanson",
+      "dob": "1995-03-26",
+      "bio": "I’d love to change the world, but they won’t give me the source code.",
+      "joined": "2025-03-26"
+    },
+    {
+      "id": "830c",
+      "username": "sajesh",
+      "email": "saj@gmail.com",
+      "password": "sajesh123",
+      "fullName": "sajesh",
+      "dob": "2004-02-18",
+      "bio": "q",
+      "joined": "2025-03-26"
+    },
+    {
+      "id": "ae49",
+      "username": "sanjeev",
+      "email": "sanzivmagat80@gmail.com",
+      "password": "magat123",
+      "fullName": "Sanjeev Magar",
+      "dob": "2004-07-20",
+      "bio": "a",
+      "joined": "2025-03-26"
+    },
+    {
+      "id": "new-user-id",
+      "username": "newuser",
+      "email": "newuser@example.com",
+      "password": "newpassword123",
+      "fullName": "New User",
+      "dob": "1990-01-01",
+      "bio": "Not provided",
+      "joined": "2025-03-27"
+    },
+    {
+      "id": "2945",
+      "username": "test8",
+      "email": "d@gmail.com",
+      "password": "test8",
+      "fullName": "s",
+      "dob": "2025-03-11",
+      "bio": "Not provided",
+      "joined": "2025-03-28"
+    }
+  ]
+}
