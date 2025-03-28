@@ -89,14 +89,14 @@ const People = () => {
               <div key={person.id} className="card mb-3">
                 <div className="card-body d-flex align-items-center">
                   <img
-                    src={defaultProfilePic}
+                    src={person.profilePic || defaultProfilePic}
                     alt="Profile"
                     className="profile-pic"
                     style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                   />
                   <div className="flex-grow-1 ms-3">
                     <strong>{person.fullName}</strong><br />
-                    <small className="text-muted">{person.bio}</small>
+                    <small className="text-muted">{person.headline}</small>
                   </div>
                   <button
                     className="btn btn-custom-outline btn-sm"

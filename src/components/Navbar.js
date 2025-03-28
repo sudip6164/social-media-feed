@@ -164,17 +164,17 @@ const Navbar = () => {
           {/* Profile Dropdown */}
           <div className="position-relative dropdown">
             <img
-              src={defaultProfilePic}
+              src={user.profilePic || defaultProfilePic}
               alt="Profile"
               className="profile-pic dropdown-toggle"
               id="profileDropdown"
               data-bs-toggle="dropdown"            />
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
               <li className="profile-header">
-                <img src={defaultProfilePic} alt="Profile" />
+                <img src={user.profilePic || defaultProfilePic} alt="Profile" />
                 <div>
                   <h6>{user.fullName}</h6>
-                  <p>Web Developer</p>
+                  <p>{user.headline}</p>
                 </div>
               </li>
               <li>

@@ -106,7 +106,7 @@ const Connections = () => {
                       <div className="card-body d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
                           <img
-                            src={defaultProfilePic}
+                            src={follower.profilePic || defaultProfilePic}
                             alt="Profile"
                             className="profile-pic"
                             style={{ width: '40px', height: '40px', borderRadius: '50%' }}
@@ -147,7 +147,7 @@ const Connections = () => {
                       <div className="card-body d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
                           <img
-                            src={defaultProfilePic}
+                            src={followedUser.profilePic || defaultProfilePic}
                             alt="Profile"
                             className="profile-pic"
                             style={{ width: '40px', height: '40px', borderRadius: '50%' }}

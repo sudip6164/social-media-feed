@@ -1,7 +1,9 @@
-import { useState, useEffect, useContext } from 'react'; // Added useContext
+// src/components/feed/Post.jsx
+import { useState, useEffect, useContext } from 'react';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import { deletePost, updatePost } from '../../utils/post.utils';
-import { UserContext } from '../../pages/context/user.context'; // Import UserContext
+import { UserContext } from '../../pages/context/user.context';
+import { getUser } from '../../utils/user.utils'; // Import getUser to fetch post creator's data
 
 const Post = ({ 
   id, 
@@ -14,10 +16,11 @@ const Post = ({
   likes, 
   comments, 
   shares,
-  likedBy = [], // New prop for tracking who liked the post
-  onUpdate 
+  likedBy = [],
+  onUpdate,
+  profilePic // New prop for creator's profile picture (optional)
 }) => {
-  const { user } = useContext(UserContext); // Get current user
+  const { user } = useContext(UserContext); // Current logged-in user
   const [timeAgo, setTimeAgo] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -25,8 +28,9 @@ const Post = ({
   const [thoughts, setThoughts] = useState(content || '');
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(image || '');
-  const [isLiked, setIsLiked] = useState(false); // Track if current user liked
-  const [likeCount, setLikeCount] = useState(likes || 0); // Local like count
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(likes || 0);
+  const [creatorProfilePic, setCreatorProfilePic] = useState(profilePic || defaultProfilePic); // Store post creator's profile pic
 
   useEffect(() => {
     if (createdAt) {
@@ -55,12 +59,28 @@ const Post = ({
   }, [createdAt]);
 
   useEffect(() => {
-    // Check if the current user has liked the post on load
+    // Check if the current user has liked the post
     if (user && likedBy) {
       setIsLiked(likedBy.includes(user.id));
       setLikeCount(likes);
     }
   }, [user, likedBy, likes]);
+
+  useEffect(() => {
+    // Fetch the creator's profile picture if not provided as a prop
+    const fetchCreatorProfilePic = async () => {
+      if (!profilePic && userId) {
+        try {
+          const creator = await getUser(userId);
+          setCreatorProfilePic(creator.profilePic || defaultProfilePic);
+        } catch (error) {
+          console.error("Error fetching creator's profile pic:", error);
+          setCreatorProfilePic(defaultProfilePic);
+        }
+      }
+    };
+    fetchCreatorProfilePic();
+  }, [userId, profilePic]);
 
   const handleDelete = async () => {
     try {
@@ -158,7 +178,7 @@ const Post = ({
         <div className="d-flex align-items-center mb-2 justify-content-between">
           <div className="d-flex align-items-center">
             <img
-              src={defaultProfilePic}
+              src={creatorProfilePic} // Use creator's profile pic
               alt="Profile"
               className="profile-pic me-2"
             />
@@ -217,9 +237,7 @@ const Post = ({
 
         <div className="d-flex justify-content-between mt-2">
           <span onClick={handleLike} style={{ cursor: 'pointer', color: isLiked ? '#007bff' : 'inherit' }}>
-            <i 
-              className="fas fa-thumbs-up" 
-            ></i> Liked ({likeCount})
+            <i className="fas fa-thumbs-up"></i> Liked ({likeCount})
           </span>
           <span><i className="fas fa-comment"></i> Comments ({comments})</span>
           <span><i className="fas fa-share"></i> Share ({shares})</span>
@@ -261,7 +279,7 @@ const Post = ({
               <form onSubmit={handleEditSubmit}>
                 <div className="d-flex align-items-center mb-3">
                   <img
-                    src={defaultProfilePic}
+                    src={creatorProfilePic} // Use creator's profile pic in edit modal too
                     alt="Profile"
                     className="profile-pic me-2"
                     style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}

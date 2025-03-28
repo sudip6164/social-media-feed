@@ -1,33 +1,32 @@
+// src/components/profile/ProfileLeftSidebar.jsx
 import { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../pages/context/user.context';
-import { getPostsByUser } from '../../utils/post.utils'; // Import the function
+import { getPostsByUser } from '../../utils/post.utils';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 
-const LeftSidebar = () => {
+const ProfileLeftSidebar = () => {
   const { user } = useContext(UserContext);
-  const [postCount, setPostCount] = useState(0); // State for post count
+  const [postCount, setPostCount] = useState(0);
 
-  // Fetch posts when component mounts or user changes
   useEffect(() => {
     if (!user) return;
 
     const fetchUserPosts = async () => {
       try {
         const userPosts = await getPostsByUser(user.id);
-        setPostCount(userPosts.length); // Set the total number of posts
+        setPostCount(userPosts.length);
       } catch (error) {
         console.error("Error fetching user posts:", error);
-        setPostCount(0); // Fallback to 0 if there's an error
+        setPostCount(0);
       }
     };
 
     fetchUserPosts();
-  }, [user]); // Dependency on user to refetch if user changes
+  }, [user]);
 
   if (!user) return null;
 
-  // Parse the joined date (YYYY-MM-DD) and format it as "Month Day, Year"
   let formattedJoinedDate = 'Not available';
   if (user.joined) {
     const date = new Date(user.joined);
@@ -43,9 +42,13 @@ const LeftSidebar = () => {
   return (
     <div className="sidebar">
       <div className="text-center">
-        <img src={user.profilePic || defaultProfilePic} alt="Profile Pic" className="profile-pic" />
+        <img
+          src={user.profilePic || defaultProfilePic}
+          alt="Profile Pic"
+          className="profile-pic"
+        />
         <h5 className="mt-3">{user.fullName}</h5>
-        <p className="text-muted">{user.headline}</p>
+        <p className="text-muted">{user.headline || 'Not provided'}</p>
         <p className="text-muted">"{user.bio}"</p>
         <p className="text-muted">Joined: {formattedJoinedDate}</p>
         <div className="d-flex justify-content-around mb-3">
@@ -77,8 +80,8 @@ const LeftSidebar = () => {
           <i className="fas fa-cog"></i> Settings
         </Link>
       </nav>
-      <Link to="/profile">
-        <button className="btn btn-primary w-100 mt-3">View Profile</button>
+      <Link to="/edit-profile">
+        <button className="btn btn-primary w-100 mt-3">Edit Profile</button>
       </Link>
       <div className="text-muted mt-4 small">
         <a href="/" className="text-muted me-2">About</a>
@@ -93,4 +96,4 @@ const LeftSidebar = () => {
   );
 };
 
-export default LeftSidebar;
+export default ProfileLeftSidebar;

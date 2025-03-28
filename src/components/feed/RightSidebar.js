@@ -78,10 +78,10 @@ const RightSidebar = () => {
           const isFollowing = user?.following.includes(suggestion.id);
           return (
             <div key={suggestion.id} className="follow-suggestion">
-              <img src={defaultProfilePic} alt="Profile" className="profile-pic" />
+              <img src={suggestion.profilePic || defaultProfilePic} alt="Profile" className="profile-pic" />
               <div>
                 <strong>{suggestion.fullName}</strong><br />
-                <small className="text-muted">{suggestion.bio}</small>
+                <small className="text-muted">{suggestion.headline}</small>
               </div>
               <button
                 className={`btn btn-sm ${isFollowing ? 'btn-outline-danger' : 'btn-custom-outline'}`}

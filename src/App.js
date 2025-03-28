@@ -1,3 +1,4 @@
+// src/App.jsx
 import './assets/css/main.css';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -8,19 +9,20 @@ import Navbar from './components/Navbar';
 import Feed from './pages/user/Feed';
 import Connections from './pages/user/Connections';
 import People from './pages/user/People';
+import Profile from './pages/user/Profile';
+import EditProfile from './pages/user/EditProfile'; // Import the new EditProfile
 
-// Placeholder components for user-facing routes
+// Placeholder components
 const CustomLayout = () => (
   <div>
-      <Navbar />
-      <div>
-        <Outlet /> {/* Render child routes here */}
-      </div>
+    <Navbar />
+    <div>
+      <Outlet /> {/* Render child routes here */}
     </div>
+  </div>
 );
 
 const News = () => <div className="container mt-5"><h1>Latest News</h1><p>This is the Latest News page.</p></div>;
-const Profile = () => <div className="container mt-5"><h1>Profile</h1><p>This is the Profile page.</p></div>
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
             <Route path="/people" element={<People />} />
             <Route path="/news" element={<News />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/edit-profile" element={<EditProfile />} /> {/* Updated */}
           </Route>
           {/* Standalone routes */}
           <Route path="/login" element={<Login />} />

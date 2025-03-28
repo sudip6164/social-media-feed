@@ -44,7 +44,7 @@ const AddPost = ({ onPostSubmit }) => {
     <div className="share-thoughts-card">
       <div className="d-flex align-items-center mb-2">
         <img
-          src={defaultProfilePic}
+          src={user.profilePic || defaultProfilePic}
           alt="Profile"
           className="profile-pic me-2"
           style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
@@ -82,7 +82,7 @@ const AddPost = ({ onPostSubmit }) => {
               <form id="shareThoughtsForm">
                 <div className="d-flex align-items-center mb-3">
                   <img
-                    src={defaultProfilePic}
+                    src={user.profilePic || defaultProfilePic}
                     alt="Profile"
                     className="profile-pic me-2"
                     style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
