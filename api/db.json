@@ -29,14 +29,13 @@
       "bio": "q",
       "joined": "2025-03-25",
       "followers": [
-        "1",
-        "ae49"
+        "1"
       ],
       "following": [
         "1",
         "ae49"
       ],
-      "followerCount": 2,
+      "followerCount": 1,
       "followingCount": 2
     },
     {
@@ -53,13 +52,11 @@
       ],
       "following": [
         "u6",
-        "u5",
-        "830c",
         "1",
         "u4"
       ],
       "followerCount": 1,
-      "followingCount": 5
+      "followingCount": 3
     },
     {
       "id": "u4",
@@ -104,6 +101,56 @@
       "following": [],
       "followerCount": 0,
       "followingCount": 0
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "userId": "1",
+      "username": "Sam Lanson",
+      "role": "Web Developer at Stackbros",
+      "createdAt": "2025-03-27T10:30:00Z",
+      "content": "I'm thrilled to share that I've completed a graduate certificate course in project management with the president's honor roll.",
+      "image": "",
+      "likes": 56,
+      "comments": 12,
+      "shares": 3
+    },
+    {
+      "id": 2,
+      "userId": "1",
+      "username": "Sam Lanson",
+      "role": "Web Developer at Stackbros",
+      "createdAt": "2025-03-27T08:45:00Z",
+      "content": "Check out this amazing view from my office today!",
+      "image": "https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-1/330281752_620459683426393_4928535324287345477_n.jpg?stp=c0.41.700.700a_dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_ohc=8NkKuCSU7HUQ7kNvgFco3NP&_nc_oc=AdkpAEDdHurupwBUTo9zGdD03NECfTCxXSvVM89c7LbGWOVwVrBpiBKSue533b2gYh0&_nc_zt=24&_nc_ht=scontent.fktm7-1.fna&_nc_gid=KAaAVweVD6cmXsjDLsvKgA&oh=00_AYHYSc1mbVxqjf0Dt8nwzUtG-XQUuV78dJ4-b705tisJlw&oe=67E2BD93",
+      "likes": 56,
+      "comments": 12,
+      "shares": 3
+    },
+    {
+      "id": "f96c",
+      "userId": "ae49",
+      "username": "Sanjeev Magar",
+      "role": "Web Developer at Stackbros",
+      "createdAt": "2025-03-28T08:34:15.764Z",
+      "content": "j",
+      "image": "",
+      "likes": 0,
+      "comments": 0,
+      "shares": 0
+    },
+    {
+      "id": "5817",
+      "userId": "ae49",
+      "username": "Sanjeev Magar",
+      "role": "Web Developer at Stackbros",
+      "createdAt": "2025-03-28T08:49:56.580Z",
+      "content": "hello",
+      "image": "",
+      "likes": 0,
+      "comments": 0,
+      "shares": 0
     }
   ]
 }
