@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react'; // Added useContext
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import { deletePost, updatePost } from '../../utils/post.utils';
+import { UserContext } from '../../pages/context/user.context'; // Import UserContext
 
 const Post = ({ 
-  id, // String ID (e.g., "a87d")
+  id, 
   userId, 
   username, 
   role, 
@@ -13,15 +14,19 @@ const Post = ({
   likes, 
   comments, 
   shares,
-  onUpdate // Callback to update feed without refresh
+  likedBy = [], // New prop for tracking who liked the post
+  onUpdate 
 }) => {
+  const { user } = useContext(UserContext); // Get current user
   const [timeAgo, setTimeAgo] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [thoughts, setThoughts] = useState(content || ''); // Pre-filled content
-  const [photoFile, setPhotoFile] = useState(null); // New file if updated
-  const [photoPreview, setPhotoPreview] = useState(image || ''); // Existing or new image preview
+  const [thoughts, setThoughts] = useState(content || '');
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(image || '');
+  const [isLiked, setIsLiked] = useState(false); // Track if current user liked
+  const [likeCount, setLikeCount] = useState(likes || 0); // Local like count
 
   useEffect(() => {
     if (createdAt) {
@@ -49,6 +54,14 @@ const Post = ({
     }
   }, [createdAt]);
 
+  useEffect(() => {
+    // Check if the current user has liked the post on load
+    if (user && likedBy) {
+      setIsLiked(likedBy.includes(user.id));
+      setLikeCount(likes);
+    }
+  }, [user, likedBy, likes]);
+
   const handleDelete = async () => {
     try {
       await deletePost(id);
@@ -74,22 +87,21 @@ const Post = ({
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      let imageBase64 = image; // Default to existing image
+      let imageBase64 = image;
       if (photoFile) {
-        // Convert new file to Base64
         imageBase64 = await new Promise((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result);
           reader.readAsDataURL(photoFile);
         });
-        console.log("New image Base64:", imageBase64.substring(0, 50)); // Log start of Base64
+        console.log("New image Base64:", imageBase64.substring(0, 50));
       } else {
         console.log("No new photo, using existing image:", imageBase64);
       }
 
       const updatedPost = {
         content: thoughts,
-        image: imageBase64 || '', // Use new Base64 or existing if unchanged
+        image: imageBase64 || '',
       };
 
       console.log("Sending update for post ID:", id, "Data:", updatedPost);
@@ -97,14 +109,46 @@ const Post = ({
       console.log("Update result:", result);
 
       setShowEditModal(false);
-      setPhotoFile(null); // Reset after successful update
-      setPhotoPreview(result.image || ''); // Update preview to match result
+      setPhotoFile(null);
+      setPhotoPreview(result.image || '');
 
       if (onUpdate) {
         onUpdate(id, result);
       }
     } catch (error) {
       console.error("Error updating post:", error);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      console.log("User not logged in, cannot like post");
+      return;
+    }
+
+    try {
+      const newLikeCount = isLiked ? likeCount - 1 : likeCount + 1;
+      const newLikedBy = isLiked 
+        ? likedBy.filter((id) => id !== user.id) 
+        : [...likedBy, user.id];
+
+      setIsLiked(!isLiked);
+      setLikeCount(newLikeCount);
+
+      const updatedPost = { 
+        likes: newLikeCount,
+        likedBy: newLikedBy
+      };
+      console.log("Updating post ID:", id, "New likes:", newLikeCount, "Liked by:", newLikedBy);
+      const result = await updatePost(id, updatedPost);
+
+      if (onUpdate) {
+        onUpdate(id, result);
+      }
+    } catch (error) {
+      console.error("Error updating like:", error);
+      setIsLiked(isLiked); // Revert on error
+      setLikeCount(likeCount);
     }
   };
 
@@ -172,7 +216,12 @@ const Post = ({
         )}
 
         <div className="d-flex justify-content-between mt-2">
-          <span><i className="fas fa-thumbs-up"></i> Liked ({likes})</span>
+          <span onClick={handleLike} style={{ cursor: 'pointer' }}>
+            <i 
+              className="fas fa-thumbs-up" 
+              style={{ color: isLiked ? '#007bff' : 'inherit' }}
+            ></i> Liked ({likeCount})
+          </span>
           <span><i className="fas fa-comment"></i> Comments ({comments})</span>
           <span><i className="fas fa-share"></i> Share ({shares})</span>
         </div>

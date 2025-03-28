@@ -27,6 +27,7 @@ export const createPost = async (postData) => {
     likes: postData.likes,
     comments: postData.comments,
     shares: postData.shares,
+    likedBy: postData.likedBy || [], // Ensure likedBy is included
   };
 
   const response = await axios.post(API_URL, dataToSend);

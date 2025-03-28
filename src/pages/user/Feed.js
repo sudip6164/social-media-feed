@@ -39,13 +39,14 @@ const Feed = () => {
         role: "Web Developer at Stackbros",
         createdAt: new Date().toISOString(),
         content: newPost.content,
-        image: newPost.image, // Already a Base64 string from AddPost
+        image: newPost.image,
         likes: 0,
         comments: 0,
         shares: 0,
+        likedBy: [], // Initialize likedBy
       };
 
-      console.log("Creating post with data:", postData); // Debug log
+      console.log("Creating post with data:", postData);
       const createdPost = await createPost(postData);
       setPosts((prevPosts) => [createdPost, ...prevPosts]);
     } catch (error) {
@@ -95,6 +96,7 @@ const Feed = () => {
                   likes={post.likes}
                   comments={post.comments}
                   shares={post.shares}
+                  likedBy={post.likedBy} // Pass likedBy
                   onUpdate={handlePostUpdate}
                 />
               ))
