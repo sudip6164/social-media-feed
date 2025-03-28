@@ -1,72 +1,90 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../../pages/context/user.context';
+import { getPosts, createPost } from '../../utils/post.utils';
 import LeftSidebar from '../../components/feed/LeftSidebar';
 import AddPost from '../../components/feed/AddPost';
 import Post from '../../components/feed/Post';
 import RightSidebar from '../../components/feed/RightSidebar';
 
 const Feed = () => {
-  console.log("Feed component is rendering"); // Debug log
+  const { user } = useContext(UserContext);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Initial dummy posts
-  const [posts, setPosts] = useState([
-    {
-      username: "Frances Guerrero",
-      role: "Web Developer at Stackbros",
-      time: "2 hours ago",
-      content: "I’m thrilled to share that I’ve completed a graduate certificate course in project management with the president’s honor roll.",
-      image: "",
-      likes: 56,
-      comments: 12,
-      shares: 3,
-    },
-    {
-      username: "Frances Guerrero",
-      role: "Web Developer at Stackbros",
-      time: "2 hours ago",
-      content: "I’m thrilled to share that I’ve completed a graduate certificate course in project management with the president’s honor roll.",
-      image: "https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-1/330281752_620459683426393_4928535324287345477_n.jpg?stp=c0.41.700.700a_dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_ohc=8NkKuCSU7HUQ7kNvgFco3NP&_nc_oc=AdkpAEDdHurupwBUTo9zGdD03NECfTCxXSvVM89c7LbGWOVwVrBpiBKSue533b2gYh0&_nc_zt=24&_nc_ht=scontent.fktm7-1.fna&_nc_gid=KAaAVweVD6cmXsjDLsvKgA&oh=00_AYHYSc1mbVxqjf0Dt8nwzUtG-XQUuV78dJ4-b705tisJlw&oe=67E2BD93",
-      likes: 56,
-      comments: 12,
-      shares: 3,
-    },
-  ]);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const postsData = await getPosts();
+        const sortedPosts = postsData.sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setPosts(sortedPosts);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        setLoading(false);
+      }
+    };
 
-  const handlePostSubmit = (newPost) => {
-    setPosts([newPost, ...posts]); // Add the new post to the top of the list
+    fetchPosts();
+  }, []);
+
+  const handlePostSubmit = async (newPost) => {
+    if (!user) return;
+
+    try {
+      const postData = {
+        userId: user.id,
+        username: user.fullName,
+        role: "Web Developer at Stackbros",
+        createdAt: new Date().toISOString(),
+        content: newPost.content,
+        image: newPost.image, // File object
+        likes: 0,
+        comments: 0,
+        shares: 0,
+      };
+
+      const createdPost = await createPost(postData);
+      setPosts([createdPost, ...posts]);
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
+
+  if (loading) {
+    return <div className="text-center mt-5">Loading posts...</div>;
+  }
 
   return (
     <div className="container-fluid mt-3">
       <div className="row">
-        {/* Left Sidebar */}
         <div className="col-md-3">
           <LeftSidebar />
         </div>
-
-        {/* Main Content */}
         <div className="col-md-6">
           <div className="main-content">
-            {/* Add Post Section */}
-            <AddPost onPostSubmit={handlePostSubmit} />
-
-            {/* Post Section */}
-            {posts.map((post, index) => (
-              <Post
-                key={index}
-                username={post.username}
-                role={post.role}
-                time={post.time}
-                content={post.content}
-                image={post.image}
-                likes={post.likes}
-                comments={post.comments}
-                shares={post.shares}
-              />
-            ))}
+            {user && <AddPost onPostSubmit={handlePostSubmit} />}
+            {posts.length === 0 ? (
+              <div className="text-center mt-5">No posts yet. Be the first to post!</div>
+            ) : (
+              posts.map((post) => (
+                <Post
+                  key={post.id}
+                  userId={post.userId}
+                  username={post.username}
+                  role={post.role}
+                  createdAt={post.createdAt}
+                  content={post.content}
+                  image={post.image} // Base64 string from db.json
+                  likes={post.likes}
+                  comments={post.comments}
+                  shares={post.shares}
+                />
+              ))
+            )}
           </div>
         </div>
-
-        {/* Right Sidebar */}
         <div className="col-md-3">
           <RightSidebar />
         </div>
