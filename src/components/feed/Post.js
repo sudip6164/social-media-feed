@@ -216,10 +216,9 @@ const Post = ({
         )}
 
         <div className="d-flex justify-content-between mt-2">
-          <span onClick={handleLike} style={{ cursor: 'pointer' }}>
+          <span onClick={handleLike} style={{ cursor: 'pointer', color: isLiked ? '#007bff' : 'inherit' }}>
             <i 
               className="fas fa-thumbs-up" 
-              style={{ color: isLiked ? '#007bff' : 'inherit' }}
             ></i> Liked ({likeCount})
           </span>
           <span><i className="fas fa-comment"></i> Comments ({comments})</span>
