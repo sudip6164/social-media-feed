@@ -33,23 +33,47 @@ const Feed = () => {
     if (!user) return;
 
     try {
+      let imageBase64 = '';
+      if (newPost.image) {
+        imageBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(newPost.image);
+        });
+      }
+
       const postData = {
         userId: user.id,
         username: user.fullName,
         role: "Web Developer at Stackbros",
         createdAt: new Date().toISOString(),
         content: newPost.content,
-        image: newPost.image,
+        image: imageBase64,
         likes: 0,
         comments: 0,
         shares: 0,
       };
 
       const createdPost = await createPost(postData);
-      setPosts([createdPost, ...posts]);
+      setPosts((prevPosts) => [createdPost, ...prevPosts]);
     } catch (error) {
       console.error("Error creating post:", error);
     }
+  };
+
+  const handlePostUpdate = (postId, updatedPost) => {
+    console.log("Handling update for ID:", postId, "Updated post:", updatedPost); // Debug
+    setPosts((prevPosts) => {
+      if (!updatedPost) {
+        // Deletion
+        return prevPosts.filter((post) => post.id !== postId);
+      } else {
+        // Update
+        return prevPosts.map((post) =>
+          post.id === postId ? { ...post, ...updatedPost } : post
+        );
+      }
+    });
   };
 
   if (loading) {
@@ -71,7 +95,7 @@ const Feed = () => {
               posts.map((post) => (
                 <Post
                   key={post.id}
-                  id={post.id} // Pass id here
+                  id={post.id}
                   userId={post.userId}
                   username={post.username}
                   role={post.role}
@@ -81,6 +105,7 @@ const Feed = () => {
                   likes={post.likes}
                   comments={post.comments}
                   shares={post.shares}
+                  onUpdate={handlePostUpdate}
                 />
               ))
             )}

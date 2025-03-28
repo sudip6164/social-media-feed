@@ -8,7 +8,6 @@ import Navbar from './components/Navbar';
 import Feed from './pages/user/Feed';
 import Connections from './pages/user/Connections';
 import People from './pages/user/People';
-import EditPost from './components/feed/EditPost';
 
 // Placeholder components for user-facing routes
 const CustomLayout = () => (
@@ -35,7 +34,6 @@ function App() {
             <Route path="/people" element={<People />} />
             <Route path="/news" element={<News />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/edit-post/:id" element={<EditPost />} />
           </Route>
           {/* Standalone routes */}
           <Route path="/login" element={<Login />} />

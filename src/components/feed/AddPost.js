@@ -110,7 +110,21 @@ const AddPost = ({ onPostSubmit }) => {
                       />
                       Click here to select a file
                     </label>
-                    {photoPreview && <img src={photoPreview} alt="Uploaded" style={{ maxWidth: '100%', marginTop: '10px' }} />}
+                    {photoPreview && (
+                      <img
+                        src={photoPreview}
+                        alt="Uploaded"
+                        style={{
+                          width: '300px', // Fixed width
+                          height: '200px', // Fixed height
+                          objectFit: 'contain', // Ensures content fits without distortion
+                          marginTop: '10px',
+                          display: 'block',
+                          marginLeft: 'auto',
+                          marginRight: 'auto',
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
               </form>

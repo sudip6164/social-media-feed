@@ -5,7 +5,6 @@ import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 
 const LeftSidebar = () => {
   const { user } = useContext(UserContext);
-  console.log("LeftSidebar is rendering, user:", user);
   if (!user) return null;
 
   // Parse the joined date (YYYY-MM-DD) and format it as "Month Day, Year"

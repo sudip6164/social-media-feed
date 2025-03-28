@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
-import { deletePost } from '../../utils/post.utils';
+import { deletePost, updatePost } from '../../utils/post.utils';
 
 const Post = ({ 
-  id, // Add id prop
+  id, // String ID (e.g., "a87d")
   userId, 
   username, 
   role, 
@@ -13,12 +12,16 @@ const Post = ({
   image, 
   likes, 
   comments, 
-  shares 
+  shares,
+  onUpdate // Callback to update feed without refresh
 }) => {
   const [timeAgo, setTimeAgo] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const navigate = useNavigate();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [thoughts, setThoughts] = useState(content || ''); // Pre-filled content
+  const [photoFile, setPhotoFile] = useState(null); // New file if updated
+  const [photoPreview, setPhotoPreview] = useState(image || ''); // Existing or new image preview
 
   useEffect(() => {
     if (createdAt) {
@@ -50,9 +53,48 @@ const Post = ({
     try {
       await deletePost(id);
       setShowDeleteModal(false);
-      window.location.reload(); // Refresh to update feed (could be improved with state management)
+      if (onUpdate) {
+        console.log("Deleting post with ID:", id); // Debug
+        onUpdate(id, null); // Notify parent to remove post
+      }
     } catch (error) {
       console.error("Error deleting post:", error);
+    }
+  };
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPhotoFile(file); // Store new file
+      setPhotoPreview(URL.createObjectURL(file)); // Show temporary preview
+    }
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let imageBase64 = photoPreview;
+      if (photoFile) {
+        imageBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(photoFile);
+        });
+      }
+
+      const updatedPost = {
+        content: thoughts,
+        image: imageBase64 || '', // Use new Base64 or existing if unchanged
+      };
+
+      const result = await updatePost(id, updatedPost);
+      setShowEditModal(false);
+      if (onUpdate) {
+        console.log("Updating post with ID:", id, "Result:", result); // Debug
+        onUpdate(id, result); // Notify parent to update post
+      }
+    } catch (error) {
+      console.error("Error updating post:", error);
     }
   };
 
@@ -82,13 +124,19 @@ const Post = ({
               <div className="dropdown-menu show" style={{ position: 'absolute', right: 0 }}>
                 <button
                   className="dropdown-item"
-                  onClick={() => navigate(`/edit-post/${id}`)}
+                  onClick={() => {
+                    setShowEditModal(true);
+                    setShowMenu(false);
+                  }}
                 >
                   Edit Post
                 </button>
                 <button
                   className="dropdown-item text-danger"
-                  onClick={() => setShowDeleteModal(true)}
+                  onClick={() => {
+                    setShowDeleteModal(true);
+                    setShowMenu(false);
+                  }}
                 >
                   Delete
                 </button>
@@ -98,7 +146,20 @@ const Post = ({
         </div>
 
         <p>{content}</p>
-        {image && <img src={image} alt="Post" className="post-image" style={{ maxWidth: '100%' }} />}
+        {image && (
+          <img
+            src={image}
+            alt="Post"
+            style={{
+              width: '300px',
+              height: '200px',
+              objectFit: 'contain',
+              display: 'block',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          />
+        )}
 
         <div className="d-flex justify-content-between mt-2">
           <span><i className="fas fa-thumbs-up"></i> Liked ({likes})</span>
@@ -125,6 +186,70 @@ const Post = ({
               <button type="button" className="btn btn-danger" onClick={handleDelete}>
                 Delete
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Edit Post Modal */}
+      <div className={`modal fade ${showEditModal ? 'show d-block' : ''}`} tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Edit Post</h5>
+              <button type="button" className="btn-close" onClick={() => setShowEditModal(false)}></button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={handleEditSubmit}>
+                <div className="d-flex align-items-center mb-3">
+                  <img
+                    src={defaultProfilePic}
+                    alt="Profile"
+                    className="profile-pic me-2"
+                    style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
+                  />
+                  <textarea
+                    className="form-control"
+                    placeholder="Share your thoughts..."
+                    rows="3"
+                    value={thoughts}
+                    onChange={(e) => setThoughts(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="editPhotoUpload" className="form-label">Update Photo</label>
+                  <input
+                    type="file"
+                    id="editPhotoUpload"
+                    accept="image/*"
+                    className="form-control"
+                    onChange={handlePhotoUpload}
+                  />
+                  {photoPreview && (
+                    <img
+                      src={photoPreview}
+                      alt="Preview"
+                      style={{
+                        width: '300px',
+                        height: '200px',
+                        objectFit: 'contain',
+                        display: 'block',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginTop: '10px',
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="d-flex justify-content-end">
+                  <button type="button" className="btn btn-secondary me-2" onClick={() => setShowEditModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
