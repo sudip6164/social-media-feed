@@ -1,9 +1,10 @@
 // src/components/feed/Post.jsx
 import { useState, useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import { deletePost, updatePost } from '../../utils/post.utils';
 import { UserContext } from '../../pages/context/user.context';
-import { getUser } from '../../utils/user.utils'; // Import getUser to fetch post creator's data
+import { getUser } from '../../utils/user.utils';
 
 const Post = ({ 
   id, 
@@ -21,6 +22,7 @@ const Post = ({
   profilePic // New prop for creator's profile picture (optional)
 }) => {
   const { user } = useContext(UserContext); // Current logged-in user
+  const location = useLocation(); // Get current route
   const [timeAgo, setTimeAgo] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -30,7 +32,7 @@ const Post = ({
   const [photoPreview, setPhotoPreview] = useState(image || '');
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes || 0);
-  const [creatorProfilePic, setCreatorProfilePic] = useState(profilePic || defaultProfilePic); // Store post creator's profile pic
+  const [creatorProfilePic, setCreatorProfilePic] = useState(profilePic || defaultProfilePic);
 
   useEffect(() => {
     if (createdAt) {
@@ -172,13 +174,16 @@ const Post = ({
     }
   };
 
+  // Only show the menu if on /profile and the current user is the post's creator
+  const showOptions = location.pathname === '/profile' && user && user.id === userId;
+
   return (
     <div className="card post-card mb-3">
       <div className="card-body">
         <div className="d-flex align-items-center mb-2 justify-content-between">
           <div className="d-flex align-items-center">
             <img
-              src={creatorProfilePic} // Use creator's profile pic
+              src={creatorProfilePic}
               alt="Profile"
               className="profile-pic me-2"
             />
@@ -187,36 +192,38 @@ const Post = ({
               <small className="text-muted">{role} • {timeAgo}</small>
             </div>
           </div>
-          <div className="position-relative">
-            <button
-              className="btn btn-link p-0"
-              onClick={() => setShowMenu(!showMenu)}
-            >
-              <i className="fas fa-ellipsis-h"></i>
-            </button>
-            {showMenu && (
-              <div className="dropdown-menu show" style={{ position: 'absolute', right: 0 }}>
-                <button
-                  className="dropdown-item"
-                  onClick={() => {
-                    setShowEditModal(true);
-                    setShowMenu(false);
-                  }}
-                >
-                  Edit Post
-                </button>
-                <button
-                  className="dropdown-item text-danger"
-                  onClick={() => {
-                    setShowDeleteModal(true);
-                    setShowMenu(false);
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
+          {showOptions && (
+            <div className="position-relative">
+              <button
+                className="btn btn-link p-0"
+                onClick={() => setShowMenu(!showMenu)}
+              >
+                <i className="fas fa-ellipsis-h"></i>
+              </button>
+              {showMenu && (
+                <div className="dropdown-menu show" style={{ position: 'absolute', right: 0 }}>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      setShowEditModal(true);
+                      setShowMenu(false);
+                    }}
+                  >
+                    Edit Post
+                  </button>
+                  <button
+                    className="dropdown-item text-danger"
+                    onClick={() => {
+                      setShowDeleteModal(true);
+                      setShowMenu(false);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <p>{content}</p>
@@ -279,7 +286,7 @@ const Post = ({
               <form onSubmit={handleEditSubmit}>
                 <div className="d-flex align-items-center mb-3">
                   <img
-                    src={creatorProfilePic} // Use creator's profile pic in edit modal too
+                    src={creatorProfilePic}
                     alt="Profile"
                     className="profile-pic me-2"
                     style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}

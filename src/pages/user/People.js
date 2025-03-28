@@ -74,7 +74,7 @@ const People = () => {
         </div>
 
         <div className="col-md-6 mt-3">
-          <h5 className="mb-3">People You May Know</h5>
+          <h3 className="mb-3">People You May Know</h3>
           
           {isLoading && unfollowedUsers.length === 0 ? (
             <div className="text-center">

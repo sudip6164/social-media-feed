@@ -118,8 +118,12 @@ const ProfileConnections = () => {
                       }`}
                       style={{
                         transition: 'all 0.3s ease',
-                        padding: '4px 8px !important', // Compact size
-                        fontSize: '12px !important', // For icon visibility
+                        padding: '4px !important', // Uniform padding for both buttons
+                        width: '30px', // Fixed width to ensure consistency
+                        height: '30px', // Fixed height for a square button
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                       onClick={() => handleFollowToggle(follower.id)}
                       onMouseEnter={(e) => {
@@ -131,11 +135,10 @@ const ProfileConnections = () => {
                         e.target.style.boxShadow = 'none';
                       }}
                     >
-                      {user.following.includes(follower.id) ? (
-                        <i className="fas fa-minus"></i>
-                      ) : (
-                        <i className="fas fa-plus"></i>
-                      )}
+                      <i
+                        className={user.following.includes(follower.id) ? 'fas fa-minus' : 'fas fa-plus'}
+                        style={{ fontSize: '12px' }} // Consistent icon size
+                      ></i>
                     </button>
                   </div>
                 </div>
@@ -168,8 +171,12 @@ const ProfileConnections = () => {
                       className="btn btn-sm btn-outline-danger rounded-pill px-2"
                       style={{
                         transition: 'all 0.3s ease',
-                        padding: '4px 8px !important', // Compact size
-                        fontSize: '12px !important', // For icon visibility
+                        padding: '4px !important', // Uniform padding
+                        width: '30px', // Fixed width to match the Follow button
+                        height: '30px', // Fixed height for a square button
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                       onClick={() => handleFollowToggle(followedUser.id)}
                       onMouseEnter={(e) => {
@@ -179,7 +186,10 @@ const ProfileConnections = () => {
                         e.target.style.boxShadow = 'none';
                       }}
                     >
-                      <i className="fas fa-minus"></i>
+                      <i
+                        className="fas fa-minus"
+                        style={{ fontSize: '12px' }} // Consistent icon size
+                      ></i>
                     </button>
                   </div>
                 </div>
