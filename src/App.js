@@ -11,6 +11,7 @@ import Connections from './pages/user/Connections';
 import People from './pages/user/People';
 import Profile from './pages/user/Profile';
 import EditProfile from './pages/user/EditProfile';
+import News from './pages/user/News';
 import { useContext } from 'react';
 
 // Placeholder components
@@ -23,15 +24,12 @@ const CustomLayout = () => (
   </div>
 );
 
-const News = () => <div className="container mt-5"><h1>Latest News</h1><p>This is the Latest News page.</p></div>;
-
 function App() {
   return (
     <UserProvider>
       <BrowserRouter>
         <Routes>
           {/* Public routes */}
-          <Route path="/news" element={<News />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           
@@ -44,6 +42,7 @@ function App() {
             <Route index element={<Feed />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/people" element={<People />} />
+            <Route path="/news" element={<News />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit-profile" element={<EditProfile />} />
           </Route>

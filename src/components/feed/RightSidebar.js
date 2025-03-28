@@ -1,21 +1,13 @@
-import { useContext, useState, useEffect } from 'react';
-import { UserContext } from '../../pages/context/user.context';
-import { getUsers, updateUser, getUser } from '../../utils/user.utils';
-import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
-import { Link } from 'react-router-dom';
+import { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../pages/context/user.context";
+import { getUsers, updateUser, getUser } from "../../utils/user.utils";
+import defaultProfilePic from "../../assets/img/defaultProfile.jpg";
+import { Link } from "react-router-dom";
 
 const RightSidebar = () => {
   const { user, _setUser } = useContext(UserContext);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
-
-  const newsItems = [
-    { title: "Ten questions you should answer truthfully", time: "2hr" },
-    { title: "Five unbelievable facts about money", time: "3hr" },
-    { title: "Best Pinterest Boards for learning about business", time: "4hr" },
-    { title: "Skills that you can learn from business", time: "6hr" },
-    { title: "Top 10 productivity tips for developers", time: "8hr" },
-    { title: "How to stay motivated in 2025", time: "10hr" },
-  ];
+  const [news, setNews] = useState([]);
 
   // Fetch suggested users (excluding current user and already followed)
   useEffect(() => {
@@ -23,13 +15,30 @@ const RightSidebar = () => {
       if (!user) return;
       const allUsers = await getUsers();
       const filteredUsers = allUsers
-        .filter(u => u.id !== user.id && !user.following.includes(u.id))
+        .filter((u) => u.id !== user.id && !user.following.includes(u.id))
         .sort((a, b) => new Date(b.joined) - new Date(a.joined))
         .slice(0, 5);
       setSuggestedUsers(filteredUsers);
     };
     fetchSuggestedUsers();
   }, [user]);
+
+  // Fetch live Nepali news
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(
+          "https://newsdata.io/api/1/news?country=np&apikey=pub_76901141da7f65e3fe24fd2bbc1594bae907a"
+        );
+        const data = await response.json();
+        setNews(data.results || []);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   // Handle follow/unfollow
   const handleFollowToggle = async (targetUserId) => {
@@ -39,28 +48,28 @@ const RightSidebar = () => {
 
     // Update CURRENT USER (who clicked the button)
     const updatedFollowing = isFollowing
-      ? user.following.filter(id => id !== targetUserId) // Unfollow
+      ? user.following.filter((id) => id !== targetUserId) // Unfollow
       : [...user.following, targetUserId]; // Follow
 
     await updateUser(user.id, {
       following: updatedFollowing,
-      followingCount: updatedFollowing.length
+      followingCount: updatedFollowing.length,
     });
 
     // Update TARGET USER (the one being followed/unfollowed)
     const targetUser = await getUser(targetUserId);
     const updatedFollowers = isFollowing
-      ? targetUser.followers.filter(id => id !== user.id) // Remove follower
+      ? targetUser.followers.filter((id) => id !== user.id) // Remove follower
       : [...targetUser.followers, user.id]; // Add follower
 
     await updateUser(targetUserId, {
       followers: updatedFollowers,
-      followerCount: updatedFollowers.length
+      followerCount: updatedFollowers.length,
     });
 
     // Update UI (remove from suggestions if followed)
     if (!isFollowing) {
-      setSuggestedUsers(prev => prev.filter(u => u.id !== targetUserId));
+      setSuggestedUsers((prev) => prev.filter((u) => u.id !== targetUserId));
     }
 
     // Refresh current user data
@@ -78,13 +87,20 @@ const RightSidebar = () => {
           const isFollowing = user?.following.includes(suggestion.id);
           return (
             <div key={suggestion.id} className="follow-suggestion">
-              <img src={suggestion.profilePic || defaultProfilePic} alt="Profile" className="profile-pic" />
+              <img
+                src={suggestion.profilePic || defaultProfilePic}
+                alt="Profile"
+                className="profile-pic"
+              />
               <div>
-                <strong>{suggestion.fullName}</strong><br />
+                <strong>{suggestion.fullName}</strong>
+                <br />
                 <small className="text-muted">{suggestion.headline}</small>
               </div>
               <button
-                className={`btn btn-sm ${isFollowing ? 'btn-outline-danger' : 'btn-custom-outline'}`}
+                className={`btn btn-sm ${
+                  isFollowing ? "btn-outline-danger" : "btn-custom-outline"
+                }`}
                 onClick={() => handleFollowToggle(suggestion.id)}
               >
                 {isFollowing ? (
@@ -101,13 +117,22 @@ const RightSidebar = () => {
         <button className="btn btn-custom-outline w-100 mb-3">View more</button>
       </Link>
 
-      <h6>Today's news</h6>
-      {newsItems.map((news, index) => (
-        <div key={index} className="news-item">
-          <a href="/">{news.title}</a><br />
-          <small className="text-muted">{news.time}</small>
-        </div>
-      ))}
+      <h6>Today's News</h6>
+      {news.length === 0 ? (
+        <p>Loading news...</p>
+      ) : (
+        news.slice(0, 5).map((article, index) => (
+          <div key={index} className="news-item">
+            <a href={article.link} target="_blank" rel="noopener noreferrer">
+              {article.title}
+            </a>
+            <br />
+            <small className="text-muted">
+              {new Date(article.pubDate).toLocaleString()}
+            </small>
+          </div>
+        ))
+      )}
     </div>
   );
 };
