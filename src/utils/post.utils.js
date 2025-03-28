@@ -23,7 +23,7 @@ export const createPost = async (postData) => {
     role: postData.role,
     createdAt: postData.createdAt,
     content: postData.content,
-    image: imageBase64, // Store as Base64 in db.json
+    image: imageBase64,
     likes: postData.likes,
     comments: postData.comments,
     shares: postData.shares,

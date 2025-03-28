@@ -39,7 +39,7 @@ const Feed = () => {
         role: "Web Developer at Stackbros",
         createdAt: new Date().toISOString(),
         content: newPost.content,
-        image: newPost.image, // File object
+        image: newPost.image,
         likes: 0,
         comments: 0,
         shares: 0,
@@ -71,12 +71,13 @@ const Feed = () => {
               posts.map((post) => (
                 <Post
                   key={post.id}
+                  id={post.id} // Pass id here
                   userId={post.userId}
                   username={post.username}
                   role={post.role}
                   createdAt={post.createdAt}
                   content={post.content}
-                  image={post.image} // Base64 string from db.json
+                  image={post.image}
                   likes={post.likes}
                   comments={post.comments}
                   shares={post.shares}
