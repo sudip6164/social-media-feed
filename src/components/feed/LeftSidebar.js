@@ -34,10 +34,10 @@ const LeftSidebar = () => {
             <strong>256</strong><br />Post
           </div>
           <div>
-            <strong>2.5K</strong><br />Followers
+            <strong>{user.followerCount || 0}</strong><br />Followers
           </div>
           <div>
-            <strong>365</strong><br />Following
+            <strong>{user.followingCount || 0}</strong><br />Following
           </div>
         </div>
       </div>

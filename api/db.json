@@ -8,17 +8,36 @@
       "fullName": "Sam Lanson",
       "dob": "1995-03-26",
       "bio": "I’d love to change the world, but they won’t give me the source code.",
-      "joined": "2025-03-26"
+      "joined": "2025-03-26",
+      "followers": [
+        "830c",
+        "ae49"
+      ],
+      "following": [
+        "830c"
+      ],
+      "followerCount": 2,
+      "followingCount": 1
     },
     {
       "id": "830c",
       "username": "sajesh",
       "email": "saj@gmail.com",
       "password": "sajesh123",
-      "fullName": "sajesh",
+      "fullName": "Sajesh",
       "dob": "2004-02-18",
       "bio": "q",
-      "joined": "2025-03-26"
+      "joined": "2025-03-25",
+      "followers": [
+        "1",
+        "ae49"
+      ],
+      "following": [
+        "1",
+        "ae49"
+      ],
+      "followerCount": 2,
+      "followingCount": 2
     },
     {
       "id": "ae49",
@@ -28,27 +47,63 @@
       "fullName": "Sanjeev Magar",
       "dob": "2004-07-20",
       "bio": "a",
-      "joined": "2025-03-26"
+      "joined": "2025-03-24",
+      "followers": [
+        "830c"
+      ],
+      "following": [
+        "u6",
+        "u5",
+        "830c",
+        "1",
+        "u4"
+      ],
+      "followerCount": 1,
+      "followingCount": 5
     },
     {
-      "id": "new-user-id",
-      "username": "newuser",
-      "email": "newuser@example.com",
-      "password": "newpassword123",
-      "fullName": "New User",
-      "dob": "1990-01-01",
-      "bio": "Not provided",
-      "joined": "2025-03-27"
+      "id": "u4",
+      "username": "alice",
+      "email": "alice@example.com",
+      "password": "alice123",
+      "fullName": "Alice Johnson",
+      "dob": "1990-05-15",
+      "bio": "Lover of tech and coffee.",
+      "joined": "2025-03-27",
+      "followers": [
+        "ae49"
+      ],
+      "following": [],
+      "followerCount": 1,
+      "followingCount": 0
     },
     {
-      "id": "2945",
-      "username": "test8",
-      "email": "d@gmail.com",
-      "password": "test8",
-      "fullName": "s",
-      "dob": "2025-03-11",
-      "bio": "Not provided",
-      "joined": "2025-03-28"
+      "id": "u5",
+      "username": "bob",
+      "email": "bob@example.com",
+      "password": "bob123",
+      "fullName": "Bob Smith",
+      "dob": "1985-08-22",
+      "bio": "Always learning something new.",
+      "joined": "2025-03-23",
+      "followers": [],
+      "following": [],
+      "followerCount": 0,
+      "followingCount": 0
+    },
+    {
+      "id": "u6",
+      "username": "clara",
+      "email": "clara@example.com",
+      "password": "clara123",
+      "fullName": "Clara Davis",
+      "dob": "1992-11-30",
+      "bio": "Passionate about coding.",
+      "joined": "2025-03-22",
+      "followers": [],
+      "following": [],
+      "followerCount": 0,
+      "followingCount": 0
     }
   ]
 }

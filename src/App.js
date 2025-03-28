@@ -6,6 +6,8 @@ import Signup from './pages/auth/Signup';
 import { UserProvider } from './pages/context/user.context';
 import Navbar from './components/Navbar';
 import Feed from './pages/user/Feed';
+import Connections from './pages/user/Connections';
+import People from './pages/user/People';
 
 // Placeholder components for user-facing routes
 const CustomLayout = () => (
@@ -17,8 +19,6 @@ const CustomLayout = () => (
     </div>
 );
 
-const Connections = () => <div className="container mt-5"><h1>Connections</h1><p>This is the Connections page.</p></div>;
-const People = () => <div className="container mt-5"><h1>People</h1><p>This is the People page.</p></div>;
 const News = () => <div className="container mt-5"><h1>Latest News</h1><p>This is the Latest News page.</p></div>;
 const Profile = () => <div className="container mt-5"><h1>Profile</h1><p>This is the Profile page.</p></div>
 

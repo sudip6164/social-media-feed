@@ -78,6 +78,27 @@ body {
     color: var(--background-card);
 }
 
+.btn-outline-danger {
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+    border-radius: 25px;
+    padding: 5px 10px; /* Adjusted for smaller buttons */
+    transition: transform 0.2s, background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--error-color);
+    color: var(--background-card);
+    transform: scale(1.05);
+}
+
+.btn-outline-danger i {
+    color: var(--error-color);
+}
+
+.btn-outline-danger:hover i {
+    color: var(--background-card);
+}
 /* Profile Picture */
 .profile-pic {
     width: 40px;
