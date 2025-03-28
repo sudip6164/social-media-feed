@@ -5,7 +5,7 @@ import { createUser, getUsers } from '../../utils/user.utils';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { _setUser } = useContext(UserContext); // Access _setUser from context
+  const { _setUser } = useContext(UserContext);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     username: '',
@@ -14,7 +14,7 @@ const Signup = () => {
     fullName: '',
     dob: '',
     bio: '',
-    joined: '', // Add joined field to store the date
+    joined: '',
   });
   const [error, setError] = useState('');
 
@@ -67,7 +67,6 @@ const Signup = () => {
     e.preventDefault();
     if (validateStep(currentStep)) {
       try {
-        // Check if username or email already exists
         const users = await getUsers();
         const userExists = users.some(
           (u) => u.username === formData.username || u.email === formData.email
@@ -78,17 +77,10 @@ const Signup = () => {
           return;
         }
 
-        // Dynamically generate the current date in ISO format (YYYY-MM-DD)
         const currentDate = new Date();
-        const joinedDate = currentDate.toISOString().split('T')[0]; // e.g., "2025-03-27"
+        const joinedDate = currentDate.toISOString().split('T')[0];
 
-        // Update formData with the joined date
-        setFormData((prevData) => ({
-          ...prevData,
-          joined: joinedDate,
-        }));
-
-        // Create new user with the joined date
+        // Create new user with all required fields
         const newUser = {
           username: formData.username,
           email: formData.email,
@@ -96,16 +88,18 @@ const Signup = () => {
           fullName: formData.fullName,
           dob: formData.dob,
           bio: formData.bio || 'Not provided',
-          joined: joinedDate, // Store in ISO format (same as dob)
+          joined: joinedDate,
+          followers: [],           // Initialize as empty array
+          following: [],          // Initialize as empty array
+          followerCount: 0,       // Initialize to 0
+          followingCount: 0,      // Initialize to 0
         };
 
         await createUser(newUser);
 
-        // Fetch the newly created user to get the ID
         const updatedUsers = await getUsers();
         const createdUser = updatedUsers.find((u) => u.email === formData.email);
 
-        // Log the user in
         _setUser(createdUser);
         setTimeout(() => {
           navigate('/login');
@@ -116,7 +110,7 @@ const Signup = () => {
     }
   };
 
-  const progress = ((currentStep - 1) / 2) * 100; // 3 steps total
+  const progress = ((currentStep - 1) / 2) * 100;
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>

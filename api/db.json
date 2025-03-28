@@ -96,14 +96,18 @@
       "followingCount": 0
     },
     {
-      "id": "9c05",
+      "id": "ba0e",
       "username": "sudip",
       "email": "sudippradhanadgj@gmail.com",
       "password": "sudip123",
       "fullName": "Sudip Pradhan",
-      "dob": "2017-01-28",
+      "dob": "2025-03-05",
       "bio": "Not provided",
-      "joined": "2025-03-28"
+      "joined": "2025-03-28",
+      "followers": [],
+      "following": [],
+      "followerCount": 0,
+      "followingCount": 0
     }
   ],
   "posts": [
