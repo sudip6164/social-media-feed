@@ -33,27 +33,19 @@ const Feed = () => {
     if (!user) return;
 
     try {
-      let imageBase64 = '';
-      if (newPost.image) {
-        imageBase64 = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(newPost.image);
-        });
-      }
-
       const postData = {
         userId: user.id,
         username: user.fullName,
         role: "Web Developer at Stackbros",
         createdAt: new Date().toISOString(),
         content: newPost.content,
-        image: imageBase64,
+        image: newPost.image, // Already a Base64 string from AddPost
         likes: 0,
         comments: 0,
         shares: 0,
       };
 
+      console.log("Creating post with data:", postData); // Debug log
       const createdPost = await createPost(postData);
       setPosts((prevPosts) => [createdPost, ...prevPosts]);
     } catch (error) {
@@ -62,13 +54,11 @@ const Feed = () => {
   };
 
   const handlePostUpdate = (postId, updatedPost) => {
-    console.log("Handling update for ID:", postId, "Updated post:", updatedPost); // Debug
+    console.log("Handling update for ID:", postId, "Updated post:", updatedPost);
     setPosts((prevPosts) => {
       if (!updatedPost) {
-        // Deletion
         return prevPosts.filter((post) => post.id !== postId);
       } else {
-        // Update
         return prevPosts.map((post) =>
           post.id === postId ? { ...post, ...updatedPost } : post
         );

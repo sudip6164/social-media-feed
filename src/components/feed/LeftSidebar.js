@@ -1,10 +1,30 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../pages/context/user.context';
+import { getPostsByUser } from '../../utils/post.utils'; // Import the function
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 
 const LeftSidebar = () => {
   const { user } = useContext(UserContext);
+  const [postCount, setPostCount] = useState(0); // State for post count
+
+  // Fetch posts when component mounts or user changes
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchUserPosts = async () => {
+      try {
+        const userPosts = await getPostsByUser(user.id);
+        setPostCount(userPosts.length); // Set the total number of posts
+      } catch (error) {
+        console.error("Error fetching user posts:", error);
+        setPostCount(0); // Fallback to 0 if there's an error
+      }
+    };
+
+    fetchUserPosts();
+  }, [user]); // Dependency on user to refetch if user changes
+
   if (!user) return null;
 
   // Parse the joined date (YYYY-MM-DD) and format it as "Month Day, Year"
@@ -30,7 +50,7 @@ const LeftSidebar = () => {
         <p className="text-muted">Joined: {formattedJoinedDate}</p>
         <div className="d-flex justify-content-around mb-3">
           <div>
-            <strong>256</strong><br />Post
+            <strong>{postCount}</strong><br />Post
           </div>
           <div>
             <strong>{user.followerCount || 0}</strong><br />Followers

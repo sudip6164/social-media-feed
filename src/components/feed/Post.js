@@ -54,8 +54,8 @@ const Post = ({
       await deletePost(id);
       setShowDeleteModal(false);
       if (onUpdate) {
-        console.log("Deleting post with ID:", id); // Debug
-        onUpdate(id, null); // Notify parent to remove post
+        console.log("Deleting post with ID:", id);
+        onUpdate(id, null);
       }
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -65,21 +65,26 @@ const Post = ({
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhotoFile(file); // Store new file
-      setPhotoPreview(URL.createObjectURL(file)); // Show temporary preview
+      setPhotoFile(file);
+      setPhotoPreview(URL.createObjectURL(file));
+      console.log("Photo uploaded:", file);
     }
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      let imageBase64 = photoPreview;
+      let imageBase64 = image; // Default to existing image
       if (photoFile) {
+        // Convert new file to Base64
         imageBase64 = await new Promise((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result);
           reader.readAsDataURL(photoFile);
         });
+        console.log("New image Base64:", imageBase64.substring(0, 50)); // Log start of Base64
+      } else {
+        console.log("No new photo, using existing image:", imageBase64);
       }
 
       const updatedPost = {
@@ -87,11 +92,16 @@ const Post = ({
         image: imageBase64 || '', // Use new Base64 or existing if unchanged
       };
 
+      console.log("Sending update for post ID:", id, "Data:", updatedPost);
       const result = await updatePost(id, updatedPost);
+      console.log("Update result:", result);
+
       setShowEditModal(false);
+      setPhotoFile(null); // Reset after successful update
+      setPhotoPreview(result.image || ''); // Update preview to match result
+
       if (onUpdate) {
-        console.log("Updating post with ID:", id, "Result:", result); // Debug
-        onUpdate(id, result); // Notify parent to update post
+        onUpdate(id, result);
       }
     } catch (error) {
       console.error("Error updating post:", error);
@@ -231,7 +241,7 @@ const Post = ({
                       alt="Preview"
                       style={{
                         width: '300px',
-                        height: '200px',
+                        height: '100px',
                         objectFit: 'contain',
                         display: 'block',
                         marginLeft: 'auto',
