@@ -1,6 +1,5 @@
-// src/components/feed/Post.jsx
 import { useState, useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation, Link } from 'react-router-dom'; // Replaced useNavigate with Link
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import { deletePost, updatePost } from '../../utils/post.utils';
 import { UserContext } from '../../pages/context/user.context';
@@ -8,7 +7,7 @@ import { getUser } from '../../utils/user.utils';
 
 const Post = ({ 
   id, 
-  userId, 
+  userId, // This is the ID of the post creator
   username, 
   headline, 
   createdAt, 
@@ -19,10 +18,10 @@ const Post = ({
   shares,
   likedBy = [],
   onUpdate,
-  profilePic // New prop for creator's profile picture (optional)
+  profilePic
 }) => {
   const { user } = useContext(UserContext); // Current logged-in user
-  const location = useLocation(); // Get current route
+  const location = useLocation();
   const [timeAgo, setTimeAgo] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -61,7 +60,6 @@ const Post = ({
   }, [createdAt]);
 
   useEffect(() => {
-    // Check if the current user has liked the post
     if (user && likedBy) {
       setIsLiked(likedBy.includes(user.id));
       setLikeCount(likes);
@@ -69,7 +67,6 @@ const Post = ({
   }, [user, likedBy, likes]);
 
   useEffect(() => {
-    // Fetch the creator's profile picture if not provided as a prop
     const fetchCreatorProfilePic = async () => {
       if (!profilePic && userId) {
         try {
@@ -169,24 +166,28 @@ const Post = ({
       }
     } catch (error) {
       console.error("Error updating like:", error);
-      setIsLiked(isLiked); // Revert on error
+      setIsLiked(isLiked);
       setLikeCount(likeCount);
     }
   };
 
-  // Only show the menu if on /profile and the current user is the post's creator
-  const showOptions = location.pathname === '/profile' && user && user.id === userId;
+  const isOwnProfile = location.pathname === '/profile';
+  const showOptions = isOwnProfile && user && user.id === userId;
 
   return (
     <div className="card post-card mb-3">
       <div className="card-body">
         <div className="d-flex align-items-center mb-2 justify-content-between">
           <div className="d-flex align-items-center">
-            <img
-              src={creatorProfilePic}
-              alt="Profile"
-              className="profile-pic me-2"
-            />
+            {/* Modified: Wrapped profile pic in Link */}
+            <Link to={`/profile/${userId}`}>
+              <img
+                src={creatorProfilePic}
+                alt="Profile"
+                className="profile-pic me-2"
+                style={{ cursor: 'pointer' }}
+              />
+            </Link>
             <div>
               <strong>{username}</strong><br />
               <small className="text-muted">{headline} • {timeAgo}</small>

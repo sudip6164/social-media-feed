@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/posts";
+const API_URL = "http://localhost:4000/posts"; // Note: Works with db.json via json-server
 
 export const getPosts = async () => {
   const response = await axios.get(API_URL);
@@ -27,7 +27,7 @@ export const createPost = async (postData) => {
     likes: postData.likes,
     comments: postData.comments,
     shares: postData.shares,
-    likedBy: postData.likedBy || [], // Ensure likedBy is included
+    likedBy: postData.likedBy || [],
   };
 
   const response = await axios.post(API_URL, dataToSend);

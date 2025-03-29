@@ -1,20 +1,20 @@
-// src/components/profile/ProfileLeftSidebar.jsx
 import { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { UserContext } from '../../pages/context/user.context';
 import { getPostsByUser } from '../../utils/post.utils';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 
-const ProfileLeftSidebar = () => {
-  const { user } = useContext(UserContext);
+const ProfileLeftSidebar = ({ targetUser }) => {
+  const { user } = useContext(UserContext); // Logged-in user for edit button logic
+  const location = useLocation();
   const [postCount, setPostCount] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!targetUser) return;
 
     const fetchUserPosts = async () => {
       try {
-        const userPosts = await getPostsByUser(user.id);
+        const userPosts = await getPostsByUser(targetUser.id);
         setPostCount(userPosts.length);
       } catch (error) {
         console.error("Error fetching user posts:", error);
@@ -23,13 +23,13 @@ const ProfileLeftSidebar = () => {
     };
 
     fetchUserPosts();
-  }, [user]);
+  }, [targetUser]);
 
-  if (!user) return null;
+  if (!targetUser) return null;
 
   let formattedJoinedDate = 'Not available';
-  if (user.joined) {
-    const date = new Date(user.joined);
+  if (targetUser.joined) {
+    const date = new Date(targetUser.joined);
     if (!isNaN(date)) {
       formattedJoinedDate = date.toLocaleDateString('en-US', {
         year: 'numeric',
@@ -39,27 +39,29 @@ const ProfileLeftSidebar = () => {
     }
   }
 
+  const isOwnProfile = location.pathname === '/profile' && user && user.id === targetUser.id;
+
   return (
     <div className="sidebar">
       <div className="text-center">
         <img
-          src={user.profilePic || defaultProfilePic}
+          src={targetUser.profilePic || defaultProfilePic}
           alt="Profile Pic"
           className="profile-pic"
         />
-        <h5 className="mt-3">{user.fullName}</h5>
-        <p className="text-muted">{user.headline || 'Not provided'}</p>
-        <p className="text-muted">"{user.bio}"</p>
+        <h5 className="mt-3">{targetUser.fullName}</h5>
+        <p className="text-muted">{targetUser.headline || 'Not provided'}</p>
+        <p className="text-muted">"{targetUser.bio}"</p>
         <p className="text-muted">Joined: {formattedJoinedDate}</p>
         <div className="d-flex justify-content-around mb-3">
           <div>
             <strong>{postCount}</strong><br />Post
           </div>
           <div>
-            <strong>{user.followerCount || 0}</strong><br />Followers
+            <strong>{targetUser.followerCount || 0}</strong><br />Followers
           </div>
           <div>
-            <strong>{user.followingCount || 0}</strong><br />Following
+            <strong>{targetUser.followingCount || 0}</strong><br />Following
           </div>
         </div>
       </div>
@@ -80,9 +82,11 @@ const ProfileLeftSidebar = () => {
           <i className="fas fa-cog"></i> Settings
         </Link>
       </nav>
-      <Link to="/edit-profile">
-        <button className="btn btn-primary w-100 mt-3">Edit Profile</button>
-      </Link>
+      {isOwnProfile && (
+        <Link to="/edit-profile">
+          <button className="btn btn-primary w-100 mt-3">Edit Profile</button>
+        </Link>
+      )}
       <div className="text-muted mt-4 small">
         <a href="/" className="text-muted me-2">About</a>
         <a href="/" className="text-muted me-2">Settings</a>

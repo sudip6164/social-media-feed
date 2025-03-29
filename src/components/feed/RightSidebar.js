@@ -87,11 +87,13 @@ const RightSidebar = () => {
           const isFollowing = user?.following.includes(suggestion.id);
           return (
             <div key={suggestion.id} className="follow-suggestion mb-3">
+              <Link to={`/profile/${suggestion.id}`}>
               <img
                 src={suggestion.profilePic || defaultProfilePic}
                 alt="Profile"
                 className="profile-pic"
               />
+              </Link>
               <div>
                 <strong>{suggestion.fullName}</strong>
                 <br />

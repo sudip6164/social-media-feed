@@ -3,6 +3,7 @@ import { UserContext } from '../context/user.context';
 import { getUsers, updateUser, getUser } from '../../utils/user.utils';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import LeftSidebar from '../../components/feed/LeftSidebar';
+import { Link } from 'react-router-dom';
 
 const People = () => {
   const { user, _setUser } = useContext(UserContext);
@@ -88,12 +89,14 @@ const People = () => {
             unfollowedUsers.map((person) => (
               <div key={person.id} className="card mb-3">
                 <div className="card-body d-flex align-items-center">
+                  <Link to={`/profile/${person.id}`}>
                   <img
                     src={person.profilePic || defaultProfilePic}
                     alt="Profile"
                     className="profile-pic"
                     style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                   />
+                  </Link>
                   <div className="flex-grow-1 ms-3">
                     <strong>{person.fullName}</strong><br />
                     <small className="text-muted">{person.headline}</small>

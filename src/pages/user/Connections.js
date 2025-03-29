@@ -3,6 +3,7 @@ import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import { UserContext } from '../context/user.context';
 import { getUsers, updateUser, getUser } from '../../utils/user.utils';
 import LeftSidebar from '../../components/feed/LeftSidebar';
+import { Link } from 'react-router-dom';
 
 const Connections = () => {
   const { user, _setUser } = useContext(UserContext);
@@ -105,12 +106,14 @@ const Connections = () => {
                     <div key={follower.id} className="card mb-3">
                       <div className="card-body d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
+                        <Link to={`/profile/${follower.id}`}>
                           <img
                             src={follower.profilePic || defaultProfilePic}
                             alt="Profile"
                             className="profile-pic"
                             style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                           />
+                          </Link>
                           <div className="ms-3">
                             <strong>{follower.fullName}</strong><br />
                             <small className="text-muted">{follower.bio}</small>
@@ -146,12 +149,14 @@ const Connections = () => {
                     <div key={followedUser.id} className="card mb-3">
                       <div className="card-body d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
+                        <Link to={`/profile/${followedUser.id}`}>
                           <img
                             src={followedUser.profilePic || defaultProfilePic}
                             alt="Profile"
                             className="profile-pic"
                             style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                           />
+                          </Link>
                           <div className="ms-3">
                             <strong>{followedUser.fullName}</strong><br />
                             <small className="text-muted">{followedUser.bio}</small>
