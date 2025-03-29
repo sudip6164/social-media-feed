@@ -1,16 +1,17 @@
-// src/pages/admin/AdminManagePosts.jsx
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Popconfirm, Space, Tag } from 'antd';
-import { DeleteOutlined, LikeOutlined, CommentOutlined, ShareAltOutlined } from '@ant-design/icons';
-import { getPosts, deletePost } from '../utils/admin.utils';
+import { DeleteOutlined, LikeOutlined, CommentOutlined, ShareAltOutlined, EditOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';  // ✅ Use useNavigate instead of Navigate
+import { deletePost, getPosts } from '../utils/admin.utils';
 
 const AdminManagePosts = () => {
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();  // ✅ Initialize useNavigate
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const data = await getPosts(); // Assuming this fetches from db.json
+        const data = await getPosts();
         setPosts(data);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -21,7 +22,7 @@ const AdminManagePosts = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deletePost(id); // Assuming this deletes from db.json
+      await deletePost(id);
       setPosts(posts.filter((post) => post.id !== id));
     } catch (error) {
       console.error('Error deleting post:', error);
@@ -50,32 +51,21 @@ const AdminManagePosts = () => {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      render: (image) => (
+      render: (image) =>
         image ? (
-          <img
-            src={image}
-            alt="Post"
-            style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-          />
+          <img src={image} alt="Post" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }} />
         ) : (
           <span>No Image</span>
-        )
-      ),
+        ),
     },
     {
       title: 'Stats',
       key: 'stats',
       render: (_, record) => (
         <Space>
-          <Tag icon={<LikeOutlined />} color="blue">
-            {record.likes} Likes
-          </Tag>
-          <Tag icon={<CommentOutlined />} color="green">
-            {record.comments} Comments
-          </Tag>
-          <Tag icon={<ShareAltOutlined />} color="purple">
-            {record.shares} Shares
-          </Tag>
+          <Tag icon={<LikeOutlined />} color="blue">{record.likes} Likes</Tag>
+          <Tag icon={<CommentOutlined />} color="green">{record.comments} Comments</Tag>
+          <Tag icon={<ShareAltOutlined />} color="purple">{record.shares} Shares</Tag>
         </Space>
       ),
     },
@@ -89,24 +79,31 @@ const AdminManagePosts = () => {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <Popconfirm
-          title="Are you sure to delete this post?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Yes"
-          cancelText="No"
-        >
+        <Space>
           <Button
             type="primary"
-            danger
-            icon={<DeleteOutlined />}
-            style={{
-              borderRadius: 6,
-              padding: '4px 12px',
-            }}
+            icon={<EditOutlined />}
+            onClick={() => navigate(`/admin/manage-posts/edit/${record.id}`)}  // ✅ Correct usage
+            style={{ borderRadius: 6, padding: '4px 12px' }}
           >
-            Delete
+            Edit
           </Button>
-        </Popconfirm>
+          <Popconfirm
+            title="Are you sure to delete this post?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteOutlined />}
+              style={{ borderRadius: 6, padding: '4px 12px' }}
+            >
+              Delete
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];

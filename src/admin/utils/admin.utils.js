@@ -30,3 +30,21 @@ export const getPosts = async () => {
 export const deletePost = async (id) => {
   await axios.delete(`${POST_API_URL}/${id}`);
 };
+
+export const getPostById = async (postId) => {
+  const response = await fetch(`http://localhost:4000/posts/${postId}`);
+  if (!response.ok) throw new Error('Post not found');
+  return response.json();
+};
+
+export const updatePost = async (postId, updatedData) => {
+  const response = await fetch(`http://localhost:4000/posts/${postId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedData),
+  });
+  if (!response.ok) throw new Error('Failed to update post');
+  return response.json();
+};

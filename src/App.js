@@ -19,6 +19,7 @@ import AdminDashboard from './admin/pages/AdminDashboard';
 import AdminManageUsers from './admin/pages/AdminManageUsers';
 import AdminManagePosts from './admin/pages/AdminManagePosts';
 import { AdminContext, AdminProvider } from './admin/pages/context/admin.context';
+import AdminEditPost from './admin/pages/AdminEditPost';
 
 // User Layout (unchanged)
 const CustomLayout = () => (
@@ -84,6 +85,7 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="manage-users" element={<AdminManageUsers />} />
               <Route path="manage-posts" element={<AdminManagePosts />} />
+              <Route path="manage-posts/edit/:postId" element={<AdminEditPost />} />
             </Route>
           </Routes>
         </BrowserRouter>
