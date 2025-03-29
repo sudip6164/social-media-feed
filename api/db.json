@@ -77,22 +77,6 @@
       "followingCount": 0
     },
     {
-      "id": "u6",
-      "username": "clara",
-      "email": "clara@example.com",
-      "password": "clara123",
-      "fullName": "Clara Davis",
-      "headline": "Coder",
-      "profilePic": "",
-      "dob": "1992-11-30",
-      "bio": "Passionate about coding.",
-      "joined": "2025-03-22",
-      "followers": [],
-      "following": [],
-      "followerCount": 0,
-      "followingCount": 0
-    },
-    {
       "id": "ba0e",
       "username": "sudip",
       "email": "sudippradhanadgj@gmail.com",
@@ -129,6 +113,19 @@
         "ae49",
         "ba0e"
       ]
+    },
+    {
+      "id": "6857",
+      "userId": "ba0e",
+      "username": "Sudip Pradhan",
+      "role": "Web Developer at Stackbros",
+      "createdAt": "2025-03-29T13:10:14.177Z",
+      "content": "test",
+      "image": "",
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "likedBy": []
     }
   ],
   "admins": [
