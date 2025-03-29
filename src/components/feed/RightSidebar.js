@@ -86,7 +86,7 @@ const RightSidebar = () => {
         suggestedUsers.map((suggestion) => {
           const isFollowing = user?.following.includes(suggestion.id);
           return (
-            <div key={suggestion.id} className="follow-suggestion">
+            <div key={suggestion.id} className="follow-suggestion mb-3">
               <img
                 src={suggestion.profilePic || defaultProfilePic}
                 alt="Profile"
@@ -117,22 +117,25 @@ const RightSidebar = () => {
         <button className="btn btn-custom-outline w-100 mb-3">View more</button>
       </Link>
 
-      <h6>Today's News</h6>
-      {news.length === 0 ? (
-        <p>Loading news...</p>
-      ) : (
-        news.slice(0, 5).map((article, index) => (
-          <div key={index} className="news-item">
-            <a href={article.link} target="_blank" rel="noopener noreferrer">
-              {article.title}
-            </a>
-            <br />
-            <small className="text-muted">
-              {new Date(article.pubDate).toLocaleString()}
-            </small>
-          </div>
-        ))
-      )}
+      {/* News Section */}
+      <div className="news-section mt-4">
+        <h6>Today's News</h6>
+        {news.length === 0 ? (
+          <p>Loading news...</p>
+        ) : (
+          news.slice(0, 5).map((article, index) => (
+            <div key={index} className="news-item mb-3">
+              <a href={article.link} target="_blank" rel="noopener noreferrer">
+                {article.title}
+              </a>
+              <br />
+              <small className="text-muted">
+                {new Date(article.pubDate).toLocaleString()}
+              </small>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };

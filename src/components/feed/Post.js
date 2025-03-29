@@ -10,7 +10,7 @@ const Post = ({
   id, 
   userId, 
   username, 
-  role, 
+  headline, 
   createdAt, 
   content, 
   image, 
@@ -189,7 +189,7 @@ const Post = ({
             />
             <div>
               <strong>{username}</strong><br />
-              <small className="text-muted">{role} • {timeAgo}</small>
+              <small className="text-muted">{headline} • {timeAgo}</small>
             </div>
           </div>
           {showOptions && (
