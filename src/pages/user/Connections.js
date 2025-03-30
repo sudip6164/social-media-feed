@@ -116,7 +116,7 @@ const Connections = () => {
                           </Link>
                           <div className="ms-3">
                             <strong>{follower.fullName}</strong><br />
-                            <small className="text-muted">{follower.bio}</small>
+                            <small className="text-muted">{follower.headline}</small>
                           </div>
                         </div>
                         <button
@@ -159,7 +159,7 @@ const Connections = () => {
                           </Link>
                           <div className="ms-3">
                             <strong>{followedUser.fullName}</strong><br />
-                            <small className="text-muted">{followedUser.bio}</small>
+                            <small className="text-muted">{followedUser.headline}</small>
                           </div>
                         </div>
                         <button
