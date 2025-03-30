@@ -6,7 +6,7 @@ import { deletePost, getPosts } from '../utils/admin.utils';
 
 const AdminManagePosts = () => {
   const [posts, setPosts] = useState([]);
-  const navigate = useNavigate();  // ✅ Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -83,7 +83,7 @@ const AdminManagePosts = () => {
           <Button
             type="primary"
             icon={<EditOutlined />}
-            onClick={() => navigate(`/admin/manage-posts/edit/${record.id}`)}  // ✅ Correct usage
+            onClick={() => navigate(`/admin/manage-posts/edit/${record.id}`)}  
             style={{ borderRadius: 6, padding: '4px 12px' }}
           >
             Edit

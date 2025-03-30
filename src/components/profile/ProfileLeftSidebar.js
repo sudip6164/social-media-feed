@@ -5,7 +5,7 @@ import { getPostsByUser } from '../../utils/post.utils';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 
 const ProfileLeftSidebar = ({ targetUser }) => {
-  const { user } = useContext(UserContext); // Logged-in user for edit button logic
+  const { user } = useContext(UserContext);
   const location = useLocation();
   const [postCount, setPostCount] = useState(0);
 

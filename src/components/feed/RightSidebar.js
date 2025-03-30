@@ -9,7 +9,6 @@ const RightSidebar = () => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [news, setNews] = useState([]);
 
-  // Fetch suggested users (excluding current user and already followed)
   useEffect(() => {
     const fetchSuggestedUsers = async () => {
       if (!user) return;
@@ -23,7 +22,6 @@ const RightSidebar = () => {
     fetchSuggestedUsers();
   }, [user]);
 
-  // Fetch live Nepali news
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -40,39 +38,34 @@ const RightSidebar = () => {
     fetchNews();
   }, []);
 
-  // Handle follow/unfollow
   const handleFollowToggle = async (targetUserId) => {
     if (!user) return;
 
     const isFollowing = user.following.includes(targetUserId);
 
-    // Update CURRENT USER (who clicked the button)
     const updatedFollowing = isFollowing
-      ? user.following.filter((id) => id !== targetUserId) // Unfollow
-      : [...user.following, targetUserId]; // Follow
+      ? user.following.filter((id) => id !== targetUserId) 
+      : [...user.following, targetUserId]; 
 
     await updateUser(user.id, {
       following: updatedFollowing,
       followingCount: updatedFollowing.length,
     });
 
-    // Update TARGET USER (the one being followed/unfollowed)
     const targetUser = await getUser(targetUserId);
     const updatedFollowers = isFollowing
-      ? targetUser.followers.filter((id) => id !== user.id) // Remove follower
-      : [...targetUser.followers, user.id]; // Add follower
+      ? targetUser.followers.filter((id) => id !== user.id) 
+      : [...targetUser.followers, user.id]; 
 
     await updateUser(targetUserId, {
       followers: updatedFollowers,
       followerCount: updatedFollowers.length,
     });
 
-    // Update UI (remove from suggestions if followed)
     if (!isFollowing) {
       setSuggestedUsers((prev) => prev.filter((u) => u.id !== targetUserId));
     }
 
-    // Refresh current user data
     const freshUserData = await getUser(user.id);
     _setUser(freshUserData);
   };

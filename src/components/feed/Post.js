@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useLocation, Link } from 'react-router-dom'; // Replaced useNavigate with Link
+import { useLocation, Link } from 'react-router-dom';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 import { deletePost, updatePost } from '../../utils/post.utils';
 import { UserContext } from '../../pages/context/user.context';
@@ -7,31 +7,37 @@ import { getUser } from '../../utils/user.utils';
 
 const Post = ({ 
   id, 
-  userId, // This is the ID of the post creator
+  userId,
   username, 
   headline, 
   createdAt, 
   content, 
   image, 
   likes, 
-  comments, 
+  comments: initialCommentsCount,
   shares,
   likedBy = [],
+  commentList = [],
   onUpdate,
   profilePic
 }) => {
-  const { user } = useContext(UserContext); // Current logged-in user
+  const { user } = useContext(UserContext);
   const location = useLocation();
   const [timeAgo, setTimeAgo] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
   const [thoughts, setThoughts] = useState(content || '');
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(image || '');
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes || 0);
+  const [comments, setComments] = useState(commentList || []);
+  const [newComment, setNewComment] = useState('');
   const [creatorProfilePic, setCreatorProfilePic] = useState(profilePic || defaultProfilePic);
+
+  const commentCount = comments.length;
 
   useEffect(() => {
     if (createdAt) {
@@ -81,12 +87,19 @@ const Post = ({
     fetchCreatorProfilePic();
   }, [userId, profilePic]);
 
+  useEffect(() => {
+    return () => {
+      if (photoPreview && photoPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
+
   const handleDelete = async () => {
     try {
       await deletePost(id);
       setShowDeleteModal(false);
       if (onUpdate) {
-        console.log("Deleting post with ID:", id);
         onUpdate(id, null);
       }
     } catch (error) {
@@ -99,34 +112,27 @@ const Post = ({
     if (file) {
       setPhotoFile(file);
       setPhotoPreview(URL.createObjectURL(file));
-      console.log("Photo uploaded:", file);
     }
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      let imageBase64 = image;
+      let imageBase64 = image || '';
       if (photoFile) {
         imageBase64 = await new Promise((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result);
           reader.readAsDataURL(photoFile);
         });
-        console.log("New image Base64:", imageBase64.substring(0, 50));
-      } else {
-        console.log("No new photo, using existing image:", imageBase64);
       }
 
       const updatedPost = {
         content: thoughts,
-        image: imageBase64 || '',
+        image: imageBase64,
       };
 
-      console.log("Sending update for post ID:", id, "Data:", updatedPost);
       const result = await updatePost(id, updatedPost);
-      console.log("Update result:", result);
-
       setShowEditModal(false);
       setPhotoFile(null);
       setPhotoPreview(result.image || '');
@@ -140,10 +146,7 @@ const Post = ({
   };
 
   const handleLike = async () => {
-    if (!user) {
-      console.log("User not logged in, cannot like post");
-      return;
-    }
+    if (!user) return;
 
     try {
       const newLikeCount = isLiked ? likeCount - 1 : likeCount + 1;
@@ -154,12 +157,10 @@ const Post = ({
       setIsLiked(!isLiked);
       setLikeCount(newLikeCount);
 
-      const updatedPost = { 
+      const result = await updatePost(id, { 
         likes: newLikeCount,
         likedBy: newLikedBy
-      };
-      console.log("Updating post ID:", id, "New likes:", newLikeCount, "Liked by:", newLikedBy);
-      const result = await updatePost(id, updatedPost);
+      });
 
       if (onUpdate) {
         onUpdate(id, result);
@@ -171,6 +172,36 @@ const Post = ({
     }
   };
 
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!user || !newComment.trim()) return;
+
+    try {
+      const newCommentObj = {
+        id: Date.now().toString(),
+        userId: user.id,
+        username: user.fullName,
+        content: newComment,
+        createdAt: new Date().toISOString(),
+        profilePic: user.profilePic || defaultProfilePic
+      };
+
+      const updatedComments = [...comments, newCommentObj];
+      setComments(updatedComments);
+      setNewComment('');
+
+      const result = await updatePost(id, {
+        commentList: updatedComments
+      });
+
+      if (onUpdate) {
+        onUpdate(id, result);
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
   const isOwnProfile = location.pathname === '/profile';
   const showOptions = isOwnProfile && user && user.id === userId;
 
@@ -179,13 +210,12 @@ const Post = ({
       <div className="card-body">
         <div className="d-flex align-items-center mb-2 justify-content-between">
           <div className="d-flex align-items-center">
-            {/* Modified: Wrapped profile pic in Link */}
             <Link to={`/profile/${userId}`}>
               <img
                 src={creatorProfilePic}
                 alt="Profile"
                 className="profile-pic me-2"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
               />
             </Link>
             <div>
@@ -233,26 +263,36 @@ const Post = ({
             src={image}
             alt="Post"
             style={{
-              width: '300px',
-              height: '200px',
+              width: '100%',
+              maxHeight: '500px',
               objectFit: 'contain',
-              display: 'block',
-              marginLeft: 'auto',
-              marginRight: 'auto',
+              borderRadius: '8px',
+              marginTop: '10px'
             }}
           />
         )}
 
-        <div className="d-flex justify-content-between mt-2">
-          <span onClick={handleLike} style={{ cursor: 'pointer', color: isLiked ? '#007bff' : 'inherit' }}>
-            <i className="fas fa-thumbs-up"></i> Liked ({likeCount})
-          </span>
-          <span><i className="fas fa-comment"></i> Comments ({comments})</span>
-          <span><i className="fas fa-share"></i> Share ({shares})</span>
+        <div className="d-flex justify-content-between mt-3 pt-2 border-top">
+          <button 
+            className="btn btn-sm btn-link text-decoration-none"
+            onClick={handleLike}
+            style={{ color: isLiked ? '#007bff' : '#6c757d' }}
+          >
+            <i className={`fas fa-thumbs-up ${isLiked ? 'text-primary' : ''}`}></i> Like ({likeCount})
+          </button>
+          <button 
+            className="btn btn-sm btn-link text-decoration-none text-muted"
+            onClick={() => setShowCommentModal(true)}
+          >
+            <i className="far fa-comment"></i> Comment ({commentCount})
+          </button>
+          <button className="btn btn-sm btn-link text-decoration-none text-muted">
+            <i className="fas fa-share"></i> Share ({shares})
+          </button>
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       <div className={`modal fade ${showDeleteModal ? 'show d-block' : ''}`} tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
@@ -275,7 +315,7 @@ const Post = ({
         </div>
       </div>
 
-      {/* Edit Post Modal */}
+      {/* Edit Modal */}
       <div className={`modal fade ${showEditModal ? 'show d-block' : ''}`} tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
@@ -313,15 +353,7 @@ const Post = ({
                     <img
                       src={photoPreview}
                       alt="Preview"
-                      style={{
-                        width: '300px',
-                        height: '100px',
-                        objectFit: 'contain',
-                        display: 'block',
-                        marginLeft: 'auto',
-                        marginRight: 'auto',
-                        marginTop: '10px',
-                      }}
+                      className="img-fluid mt-2 rounded"
                     />
                   )}
                 </div>
@@ -331,6 +363,84 @@ const Post = ({
                   </button>
                   <button type="submit" className="btn btn-primary">
                     Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Comment Modal */}
+      <div 
+        className={`modal fade ${showCommentModal ? 'show d-block' : ''}`} 
+        tabIndex="-1" 
+        style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+        onClick={() => setShowCommentModal(false)}
+      >
+        <div 
+          className="modal-dialog modal-dialog-centered"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Comments ({commentCount})</h5>
+              <button 
+                type="button" 
+                className="btn-close" 
+                onClick={() => setShowCommentModal(false)}
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body p-0" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              {comments.length > 0 ? (
+                <div className="list-group list-group-flush">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className="list-group-item border-0">
+                      <div className="d-flex">
+                        <img
+                          src={comment.profilePic}
+                          alt="Profile"
+                          className="rounded-circle me-2"
+                          style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                        />
+                        <div className="flex-grow-1">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <strong>{comment.username}</strong>
+                            <small className="text-muted">
+                              {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </small>
+                          </div>
+                          <p className="mb-0 mt-1">{comment.content}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-4 text-muted">
+                  <i className="far fa-comment-dots fa-2x mb-2"></i>
+                  <p>No comments yet</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer border-top-0">
+              <form onSubmit={handleCommentSubmit} className="w-100">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Write a comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    aria-label="Add comment"
+                  />
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    disabled={!newComment.trim()}
+                  >
+                    Post
                   </button>
                 </div>
               </form>

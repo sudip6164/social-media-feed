@@ -1,4 +1,3 @@
-// src/pages/user/EditProfile.jsx
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/user.context';
@@ -12,13 +11,12 @@ const EditProfile = () => {
     fullName: '',
     headline: '',
     bio: '',
-    profilePic: '', // Base64 string or empty
+    profilePic: '',
   });
-  const [photoFile, setPhotoFile] = useState(null); // Raw file for upload
-  const [photoPreview, setPhotoPreview] = useState(null); // Preview URL
+  const [photoFile, setPhotoFile] = useState(null); 
+  const [photoPreview, setPhotoPreview] = useState(null); 
   const [error, setError] = useState('');
 
-  // Load user data into form on mount
   useEffect(() => {
     if (user) {
       setFormData({
@@ -27,7 +25,7 @@ const EditProfile = () => {
         bio: user.bio || '',
         profilePic: user.profilePic || '',
       });
-      setPhotoPreview(user.profilePic || defaultProfilePic); // Show current pic or default
+      setPhotoPreview(user.profilePic || defaultProfilePic);
     }
   }, [user]);
 
@@ -40,7 +38,7 @@ const EditProfile = () => {
     const file = e.target.files[0];
     if (file) {
       setPhotoFile(file);
-      setPhotoPreview(URL.createObjectURL(file)); // Temporary preview
+      setPhotoPreview(URL.createObjectURL(file)); 
     }
   };
 
@@ -51,7 +49,6 @@ const EditProfile = () => {
     try {
       let profilePicBase64 = formData.profilePic;
       if (photoFile) {
-        // Convert new photo to base64
         profilePicBase64 = await new Promise((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result);
@@ -68,8 +65,8 @@ const EditProfile = () => {
 
       await updateUser(user.id, updatedUserData);
       const updatedUser = { ...user, ...updatedUserData };
-      _setUser(updatedUser); // Update context
-      navigate('/profile'); // Redirect back to profile
+      _setUser(updatedUser);
+      navigate('/profile'); 
     } catch (err) {
       setError('Failed to update profile. Please try again.');
     }
@@ -79,7 +76,7 @@ const EditProfile = () => {
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <div className="card auth-card" style={{ width: '400px' }}> {/* Same width as Login */}
+      <div className="card auth-card" style={{ width: '400px' }}> 
         <h3 className="text-center mb-4">Edit Profile</h3>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>

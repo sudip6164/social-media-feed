@@ -1,4 +1,3 @@
-// src/utils/admin.utils.js
 import axios from "axios";
 
 const ADMIN_API_URL = "http://localhost:4000/admins";

@@ -1,4 +1,3 @@
-// src/pages/admin/AdminLogin.jsx
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';

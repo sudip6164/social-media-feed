@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 const People = () => {
   const { user, _setUser } = useContext(UserContext);
   const [unfollowedUsers, setUnfollowedUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered results
-  const [searchQuery, setSearchQuery] = useState(''); // New state for search input
+  const [filteredUsers, setFilteredUsers] = useState([]); 
+  const [searchQuery, setSearchQuery] = useState(''); 
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const People = () => {
           .filter((u) => u.id !== user.id && !user.following?.includes(u.id))
           .sort((a, b) => new Date(b.joined) - new Date(a.joined));
         setUnfollowedUsers(filteredUsers);
-        setFilteredUsers(filteredUsers); // Initialize filteredUsers with all unfollowed users
+        setFilteredUsers(filteredUsers); 
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -34,7 +34,6 @@ const People = () => {
     fetchUnfollowedUsers();
   }, [user]);
 
-  // Handle search input changes
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -55,14 +54,12 @@ const People = () => {
     try {
       setIsLoading(true);
       
-      // Update CURRENT USER
       const updatedFollowing = [...(user.following || []), targetUserId];
       await updateUser(user.id, {
         following: updatedFollowing,
         followingCount: updatedFollowing.length
       });
 
-      // Update TARGET USER
       const targetUser = await getUser(targetUserId);
       const updatedFollowers = [...(targetUser.followers || []), user.id];
       await updateUser(targetUserId, {
@@ -70,11 +67,9 @@ const People = () => {
         followerCount: updatedFollowers.length
       });
 
-      // Update UI state
       setUnfollowedUsers(prev => prev.filter(u => u.id !== targetUserId));
       setFilteredUsers(prev => prev.filter(u => u.id !== targetUserId));
       
-      // Update context with fresh data
       const freshUserData = await getUser(user.id);
       _setUser(freshUserData);
     } catch (error) {

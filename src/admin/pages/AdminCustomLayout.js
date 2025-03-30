@@ -1,4 +1,3 @@
-// src/components/AdminCustomLayout.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { Layout, Menu, Button, theme } from "antd";
@@ -23,14 +22,13 @@ const AdminCustomLayout = () => {
     token: { borderRadiusLG },
   } = theme.useToken();
 
-  // Theme colors with darker/lighter shades for admin distinction
   const themeColors = {
-    sidebarBg: "#0056b3",          // Darker shade of --primary-color (#007bff)
-    sidebarText: "#ffffff",        // White for contrast
-    sidebarHover: "#003d82",      // Even darker shade for hover
-    headerBg: "#0069d9",         // Slightly darker than --primary-color
-    contentBg: "#fafbfd",        // Lighter shade of --background-body (#f5f7fb)
-    logoutColor: "#EE4B2B",      // Lighter shade of --error-color (#dc3545)
+    sidebarBg: "#0056b3",         
+    sidebarText: "#ffffff",       
+    sidebarHover: "#003d82",      
+    headerBg: "#0069d9",         
+    contentBg: "#fafbfd",        
+    logoutColor: "#EE4B2B",      
   };
 
   useEffect(() => {

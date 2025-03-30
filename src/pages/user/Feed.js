@@ -36,17 +36,17 @@ const Feed = () => {
       const postData = {
         userId: user.id,
         username: user.fullName,
-        role: "Web Developer at Stackbros",
+        headline: user.headline || "Member at BluePost",
         createdAt: new Date().toISOString(),
         content: newPost.content,
         image: newPost.image,
         likes: 0,
         comments: 0,
         shares: 0,
-        likedBy: [], // Initialize likedBy
+        likedBy: [],
+        commentList: []
       };
 
-      console.log("Creating post with data:", postData);
       const createdPost = await createPost(postData);
       setPosts((prevPosts) => [createdPost, ...prevPosts]);
     } catch (error) {
@@ -55,15 +55,21 @@ const Feed = () => {
   };
 
   const handlePostUpdate = (postId, updatedPost) => {
-    console.log("Handling update for ID:", postId, "Updated post:", updatedPost);
     setPosts((prevPosts) => {
       if (!updatedPost) {
         return prevPosts.filter((post) => post.id !== postId);
-      } else {
-        return prevPosts.map((post) =>
-          post.id === postId ? { ...post, ...updatedPost } : post
-        );
       }
+      
+      return prevPosts.map((post) => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            ...updatedPost,
+            comments: updatedPost.commentList?.length || post.comments
+          };
+        }
+        return post;
+      });
     });
   };
 
@@ -89,14 +95,15 @@ const Feed = () => {
                   id={post.id}
                   userId={post.userId}
                   username={post.username}
-                  role={post.role}
+                  headline={post.headline}
                   createdAt={post.createdAt}
                   content={post.content}
                   image={post.image}
                   likes={post.likes}
                   comments={post.comments}
                   shares={post.shares}
-                  likedBy={post.likedBy} // Pass likedBy
+                  likedBy={post.likedBy}
+                  commentList={post.commentList || []}
                   onUpdate={handlePostUpdate}
                 />
               ))

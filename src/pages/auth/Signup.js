@@ -80,7 +80,6 @@ const Signup = () => {
         const currentDate = new Date();
         const joinedDate = currentDate.toISOString().split('T')[0];
 
-        // Create new user with all required fields
         const newUser = {
           username: formData.username,
           email: formData.email,
@@ -89,10 +88,10 @@ const Signup = () => {
           dob: formData.dob,
           bio: formData.bio || 'Not provided',
           joined: joinedDate,
-          followers: [],           // Initialize as empty array
-          following: [],          // Initialize as empty array
-          followerCount: 0,       // Initialize to 0
-          followingCount: 0,      // Initialize to 0
+          followers: [],           
+          following: [],          
+          followerCount: 0,       
+          followingCount: 0,      
         };
 
         await createUser(newUser);

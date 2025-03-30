@@ -4,7 +4,7 @@ import { getUsers, updateUser, getUser } from '../../utils/user.utils';
 import { UserContext } from '../../pages/context/user.context';
 
 const ProfileConnections = ({ targetUser }) => {
-  const { user, _setUser } = useContext(UserContext); // Logged-in user for follow actions
+  const { user, _setUser } = useContext(UserContext);
   const [allUsers, setAllUsers] = useState([]);
   const [activeTab, setActiveTab] = useState('followers');
 
@@ -17,7 +17,7 @@ const ProfileConnections = ({ targetUser }) => {
   }, [targetUser]);
 
   const handleFollowToggle = async (targetUserId) => {
-    if (!user || targetUserId === user.id) return; // Prevent following self
+    if (!user || targetUserId === user.id) return;
 
     const isFollowing = user.following.includes(targetUserId);
 
@@ -104,7 +104,7 @@ const ProfileConnections = ({ targetUser }) => {
                         <small className="text-muted">{follower.bio}</small>
                       </div>
                     </div>
-                    {user && follower.id !== user.id && ( // Hide button if it's the logged-in user
+                    {user && follower.id !== user.id && ( 
                       <button
                         className={`btn btn-sm rounded-pill px-2 ${
                           user.following.includes(follower.id)
@@ -163,7 +163,7 @@ const ProfileConnections = ({ targetUser }) => {
                         <small className="text-muted">{followedUser.bio}</small>
                       </div>
                     </div>
-                    {user && targetUser.id === user.id && followedUser.id !== user.id && ( // Hide button if it's the logged-in user
+                    {user && targetUser.id === user.id && followedUser.id !== user.id && ( 
                       <button
                         className="btn btn-sm btn-outline-danger rounded-pill px-2"
                         style={{

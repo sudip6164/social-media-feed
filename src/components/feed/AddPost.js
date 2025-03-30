@@ -5,15 +5,15 @@ import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 const AddPost = ({ onPostSubmit }) => {
   const { user } = useContext(UserContext);
   const [thoughts, setThoughts] = useState('');
-  const [photoFile, setPhotoFile] = useState(null); // Store the file
-  const [photoPreview, setPhotoPreview] = useState(null); // For preview
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhotoFile(file); // Store the raw file
-      setPhotoPreview(URL.createObjectURL(file)); // Temporary preview
-      console.log("File selected:", file); // Debug log
+      setPhotoFile(file);
+      setPhotoPreview(URL.createObjectURL(file)); 
+      console.log("File selected:", file); 
     }
   };
 
@@ -26,7 +26,7 @@ const AddPost = ({ onPostSubmit }) => {
       role: "Web Developer at Stackbros",
       time: "Just now",
       content: thoughts,
-      image: photoFile, // Pass the file to the parent
+      image: photoFile,
       likes: 0,
       comments: 0,
       shares: 0,
@@ -67,7 +67,6 @@ const AddPost = ({ onPostSubmit }) => {
         >
           <i className="fas fa-camera me-1"></i> Photo
         </button>
-        {/* Other buttons unchanged */}
       </div>
 
       {/* Share Thoughts Modal */}
@@ -106,7 +105,7 @@ const AddPost = ({ onPostSubmit }) => {
                         id="photoUpload"
                         accept="image/*"
                         onChange={handlePhotoUpload}
-                        style={{ display: 'none' }} // Hidden but clickable via label
+                        style={{ display: 'none' }} 
                       />
                       Click here to select a file
                     </label>
@@ -115,9 +114,9 @@ const AddPost = ({ onPostSubmit }) => {
                         src={photoPreview}
                         alt="Uploaded"
                         style={{
-                          width: '300px', // Fixed width
-                          height: '200px', // Fixed height
-                          objectFit: 'contain', // Ensures content fits without distortion
+                          width: '300px',
+                          height: '200px', 
+                          objectFit: 'contain', 
                           marginTop: '10px',
                           display: 'block',
                           marginLeft: 'auto',

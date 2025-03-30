@@ -10,21 +10,19 @@ const Connections = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [activeTab, setActiveTab] = useState('followers');
 
-  // Fetch all users
   useEffect(() => {
     const fetchUsers = async () => {
       const users = await getUsers();
       setAllUsers(users);
     };
     fetchUsers();
-  }, [user]); // Re-fetch when user changes
+  }, [user]); 
 
   const handleFollowToggle = async (targetUserId) => {
     if (!user) return;
 
     const isFollowing = user.following.includes(targetUserId);
 
-    // Update CURRENT USER
     const updatedFollowing = isFollowing
       ? user.following.filter(id => id !== targetUserId)
       : [...user.following, targetUserId];
@@ -34,7 +32,6 @@ const Connections = () => {
       followingCount: updatedFollowing.length
     });
 
-    // Update TARGET USER
     const targetUser = allUsers.find(u => u.id === targetUserId);
     const updatedFollowers = isFollowing
       ? targetUser.followers.filter(id => id !== user.id)
@@ -45,7 +42,6 @@ const Connections = () => {
       followerCount: updatedFollowers.length
     });
 
-    // Update UI state
     const updatedUsers = allUsers.map(u => {
       if (u.id === user.id) {
         return { ...u, following: updatedFollowing, followingCount: updatedFollowing.length };
@@ -58,7 +54,6 @@ const Connections = () => {
 
     setAllUsers(updatedUsers);
     
-    // Update context with fresh data
     const freshUserData = await getUser(user.id);
     _setUser(freshUserData);
   };

@@ -1,4 +1,3 @@
-// src/App.jsx
 import './assets/css/main.css';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -21,7 +20,6 @@ import AdminManagePosts from './admin/pages/AdminManagePosts';
 import { AdminContext, AdminProvider } from './admin/pages/context/admin.context';
 import AdminEditPost from './admin/pages/AdminEditPost';
 
-// User Layout (unchanged)
 const CustomLayout = () => (
   <div>
     <Navbar />
@@ -31,7 +29,6 @@ const CustomLayout = () => (
   </div>
 );
 
-// Protected Route for Users (unchanged)
 const ProtectedParent = ({ children }) => {
   const { user } = useContext(UserContext);
   return user ? children : <Navigate to="/login" replace />;
@@ -49,11 +46,9 @@ function App() {
       <AdminProvider>
         <BrowserRouter>
           <Routes>
-            {/* Public User Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
-            {/* Protected User Routes */}
             <Route
               path="/"
               element={
@@ -71,10 +66,8 @@ function App() {
               <Route path="/edit-profile" element={<EditProfile />} />
             </Route>
 
-            {/* Public Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
 
-            {/* Protected Admin Routes */}
             <Route
               path="/admin"
               element={

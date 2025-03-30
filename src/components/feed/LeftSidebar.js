@@ -1,29 +1,28 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../pages/context/user.context';
-import { getPostsByUser } from '../../utils/post.utils'; // Import the function
+import { getPostsByUser } from '../../utils/post.utils';
 import defaultProfilePic from '../../assets/img/defaultProfile.jpg';
 
 const LeftSidebar = () => {
   const { user } = useContext(UserContext);
-  const [postCount, setPostCount] = useState(0); // State for post count
+  const [postCount, setPostCount] = useState(0); 
 
-  // Fetch posts when component mounts or user changes
   useEffect(() => {
     if (!user) return;
 
     const fetchUserPosts = async () => {
       try {
         const userPosts = await getPostsByUser(user.id);
-        setPostCount(userPosts.length); // Set the total number of posts
+        setPostCount(userPosts.length);
       } catch (error) {
         console.error("Error fetching user posts:", error);
-        setPostCount(0); // Fallback to 0 if there's an error
+        setPostCount(0);
       }
     };
 
     fetchUserPosts();
-  }, [user]); // Dependency on user to refetch if user changes
+  }, [user]); 
 
   if (!user) return null;
 

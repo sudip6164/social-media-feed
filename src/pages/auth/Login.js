@@ -5,7 +5,7 @@ import { checkLogin } from '../../utils/user.utils';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { _setUser } = useContext(UserContext); // Access _setUser from context
+  const { _setUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -27,7 +27,7 @@ const Login = () => {
         setError('Invalid email or password.');
         localStorage.setItem('is_login', '0');
       } else {
-        _setUser(user); // Set the user in context
+        _setUser(user);
         setTimeout(() => {
           navigate('/');
         }, 1000);

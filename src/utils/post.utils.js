@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/posts"; // Note: Works with db.json via json-server
+const API_URL = "http://localhost:4000/posts";
 
 export const getPosts = async () => {
   const response = await axios.get(API_URL);
@@ -25,9 +25,10 @@ export const createPost = async (postData) => {
     content: postData.content,
     image: imageBase64,
     likes: postData.likes,
-    comments: postData.comments,
+    comments: postData.comments || 0,
     shares: postData.shares,
     likedBy: postData.likedBy || [],
+    commentList: postData.commentList || []
   };
 
   const response = await axios.post(API_URL, dataToSend);
@@ -35,7 +36,10 @@ export const createPost = async (postData) => {
 };
 
 export const updatePost = async (id, postData) => {
-  const response = await axios.patch(`${API_URL}/${id}`, postData);
+  const response = await axios.patch(`${API_URL}/${id}`, {
+    ...postData,
+    commentList: postData.commentList || []
+  });
   return response.data;
 };
 
