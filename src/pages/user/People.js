@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 const People = () => {
   const { user, _setUser } = useContext(UserContext);
   const [unfollowedUsers, setUnfollowedUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered results
+  const [searchQuery, setSearchQuery] = useState(''); // New state for search input
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -21,6 +23,7 @@ const People = () => {
           .filter((u) => u.id !== user.id && !user.following?.includes(u.id))
           .sort((a, b) => new Date(b.joined) - new Date(a.joined));
         setUnfollowedUsers(filteredUsers);
+        setFilteredUsers(filteredUsers); // Initialize filteredUsers with all unfollowed users
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -30,6 +33,21 @@ const People = () => {
     
     fetchUnfollowedUsers();
   }, [user]);
+
+  // Handle search input changes
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    if (query.trim() === '') {
+      setFilteredUsers(unfollowedUsers);
+    } else {
+      const filtered = unfollowedUsers.filter(person =>
+        person.fullName.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  };
 
   const handleFollow = async (targetUserId) => {
     if (!user || isLoading) return;
@@ -54,6 +72,7 @@ const People = () => {
 
       // Update UI state
       setUnfollowedUsers(prev => prev.filter(u => u.id !== targetUserId));
+      setFilteredUsers(prev => prev.filter(u => u.id !== targetUserId));
       
       // Update context with fresh data
       const freshUserData = await getUser(user.id);
@@ -77,25 +96,45 @@ const People = () => {
         <div className="col-md-6 mt-3">
           <h3 className="mb-3">People You May Know</h3>
           
-          {isLoading && unfollowedUsers.length === 0 ? (
+          {/* Search Bar */}
+          <div className="mb-4">
+            <div className="input-group">
+              <span className="input-group-text bg-white border-end-0">
+                <i className="fas fa-search text-muted"></i>
+              </span>
+              <input
+                type="text"
+                className="form-control border-start-0"
+                placeholder="Search people by name..."
+                value={searchQuery}
+                onChange={handleSearch}
+                style={{
+                  borderRadius: '0.375rem',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                }}
+              />
+            </div>
+          </div>
+
+          {isLoading && filteredUsers.length === 0 ? (
             <div className="text-center">
               <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
-          ) : unfollowedUsers.length === 0 ? (
-            <p>No new people to follow.</p>
+          ) : filteredUsers.length === 0 ? (
+            <p>{searchQuery ? 'No matching people found.' : 'No new people to follow.'}</p>
           ) : (
-            unfollowedUsers.map((person) => (
+            filteredUsers.map((person) => (
               <div key={person.id} className="card mb-3">
                 <div className="card-body d-flex align-items-center">
                   <Link to={`/profile/${person.id}`}>
-                  <img
-                    src={person.profilePic || defaultProfilePic}
-                    alt="Profile"
-                    className="profile-pic"
-                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}
-                  />
+                    <img
+                      src={person.profilePic || defaultProfilePic}
+                      alt="Profile"
+                      className="profile-pic"
+                      style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                    />
                   </Link>
                   <div className="flex-grow-1 ms-3">
                     <strong>{person.fullName}</strong><br />
